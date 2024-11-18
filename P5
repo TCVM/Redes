@@ -1,0 +1,621 @@
+1. ¿Cuál es la función de la capa de transporte?
+
+	Desempeña el papel crítico de proporcionar directamente servicios de comunicación a los procesos de 			aplicación que se ejecutan en hosts diferentes.
+	Brinda servicio a capa de aplicacion y usa servicios de capa de internet, (red IP).
+	La primera función crítica de la capa de transporte: ampliar el servicio de entrega de la capa de red 			entre dos sistemas terminales a un servicio de entrega entre dos procesos de la capa de aplicación que se 		ejecutan en los sistemas terminales. 
+	Permite que dos entidades puedan comunicarse de forma fiable a través de un medio que puede perder o 			corromper los datos, a través de un conjunto de técnicas que protocolos de transporte emplean, por ejemplo
+	TCP.
+	La segunda funcion critica es controlar la velocidad de transmisión de las entidades de la capa de 				transporte con el fin de evitar, o recuperarse de, las congestiones que tienen lugar dentro de la red. 
+	Un protocolo de la capa de transporte proporciona una comunicación lógica entre procesos de aplicación que 	se ejecutan en hosts diferentes. Por comunicación lógica queremos decir que, desde la perspectiva de la 		aplicación, es como si los hosts que ejecutan los procesos estuvieran conectados directamente.
+	Los procesos de aplicación utilizan la comunicación lógica proporcionada por la capa de transporte para 		enviarse mensajes entre sí, sin preocuparse por los detalles de la infraestructura física utilizada para 		transportar estos mensajes. 
+	
+	Los protocolos de la capa de transporte se implementan en los sistemas terminales (hosts), y no en los 			routers de la red. En el lado emisor, la capa de transporte convierte los mensajes de la aplicación en 			segmentos de la capa de transporte, que luego se encapsulan en paquetes de la capa de red y se envían
+	al destino. Los routers de la red solo actúan sobre los campos correspondientes a la capa de red del 			paquete, sin examinar los campos del segmento de la capa de transporte encapsulado.
+
+	En el lado receptor, la capa de transporte extrae el segmento de la capa de transporte del paquete y lo 		entrega a la aplicación receptora. Para las aplicaciones de red, existen varios protocolos de la capa de 		transporte disponibles, como TCP y UDP, cada uno ofreciendo un conjunto diferente de servicios a las 			aplicaciones que los utilizan.
+	
+	• Encapsulación, define PDU donde se envía los (PDU: Protocol Data Unit)
+	  mensajes de la aplicación.
+	• MUX/DEMUX process-to-process (puertos).
+	• Soporte de datos de tamaños arbitrarios.
+	• Control y Detección de Errores, pérdida, duplicación,
+	  se corrompen.
+	• Control de Flujo.
+	• Control de Congestión.
+	• Dos modelos básicos:
+		• Modelo Confiable: TCP. Modelo NO Confiable: UDP.
+
+2. Describa la estructura del segmento TCP y UDP.
+
+	TCP (20 bytes de headers - variable)
+	
+	Puerto Origen(16 bit):Indica el número de puerto de origen de la aplicación que está enviando los datos.
+	
+	
+	Puerto Destino(16 bit):Indica el número de puerto de destino de la aplicación que está recibiendo los 								   datos.
+	
+	Numero de Secuencia/SEC(32 bit):Este campo se utiliza para mantener un seguimiento del orden de los
+								segmentos TCP en una comunicación. Cada segmento TCP se etiqueta con un número 								de secuencia único.
+	
+	Numero de reconocimiento/ACK(32 bit):Indica el número de secuencia que espera recibir el emisor(receptor?) 										 del siguiente segmento. Ayuda a establecer que los datos se han 												 recibido de manera confiable.
+	
+	Tamaño de cabecera(4 bit):Este campo especifica la longitud del encabezado TCP en palabras de 32
+							  bits. Se utiliza para identificar dónde comienza la carga útil de datos en el
+							  segmento.
+	
+	No usado:Este campo se reserva para uso futuro y debe establecerse en cero.
+	
+	Flags:Son bits que se utilizan para controlar y gestionar la comunicación entre los dispositivos.
+		  El bit ACK se utiliza para indicar que el valor transportado en el campo de reconocimiento es 				  válido; es decir, el segmento contiene un reconocimiento para un segmento que ha sido recibido 				  correctamente. Los bits RST, SYN y FIN se utilizan para el establecimiento y cierre de conexiones. 			  La activación del bit PSH indica que el receptor deberá pasar los datos a la capa superior de forma 			  inmediata. Por último, el bit URG se utiliza para indicar que hay datos en este segmento que la 				  entidad de la capa superior del lado emisor ha marcado como “urgentes”.
+	
+	Tamaño de ventana(16 bit):Indica el tamaño de la ventana de recepción que el receptor tiene
+							  disponible para aceptar datos. Ayuda a controlar el flujo de datos en la
+							  conexión.
+							  
+	Suma de comprobación Internet/Checksum(16 bit):Proporciona una suma de verificación para verificar la
+												   integridad de los datos en el segmento TCP y detectar 														   errores de transmisión.
+	
+	Puntero de Datos Urgentes(16 bit):Se utiliza en la comunicación para indicar la posición de datos urgentes
+									  dentro del segmento, si es necesario.
+									  
+	Opciones(?):Este campo opcional permite la inclusión de información adicional en el encabezado TCP, como 					máximas segment size (MSS), ventana de escala, timestamp, entre otros. Las opciones se 							utilizan para ajustar y optimizar la comunicación según las necesidades de la aplicación.
+
+
+	UDP(8 bytes de headers)
+	
+		Puerto Origen:Especifica el número de puerto del proceso que envía el datagrama UDP
+		
+		Puerto Destino:Este campo indica el número de puerto del proceso de destino al que se debe entregar el 					   datagrama UDP
+		
+		Tamaño:Este campo especifica la longitud total del datagrama UDP, incluyendo tanto el encabezado como 				   los datos. La longitud se mide en bytes y permite al receptor conocer la cantidad de 						   información que debe procesar en el datagrama.
+
+		Suma de comprobación Internet/Checksum:La suma de verificación es un valor calculado que se utiliza 												   para detectar errores en el datagrama UDP durante la 														   transmisión. Se calcula en función del contenido del datagrama, 											   incluyendo el encabezado y los datos. El receptor verifica esta 											   suma de verificación para determinar si el datagrama UDP ha 													   llegado intacto o si ha sufrido algún tipo de corrupción 													   durante la transmisión.
+		
+3. ¿Cuál es el objetivo del uso de puertos en el modelo TCP/IP?
+
+	Se utilizan para distinguir las aplicaciones (y, por lo tanto, protocolos) que están
+	enviando/recibiendo datos. Los puertos actúan como los extremos en una
+	comunicación y permiten que múltiples aplicaciones en una misma
+	computadora o dispositivo se comuniquen simultáneamente a través de la red.
+	TCP asigna un socket a cada conexion y solo recibe y envia paquetes a traves de esa conexion, entre los
+	puertos origen y destino ya definidos, es decir, TCP no permite que un mismo puerto destino reciba 				conexiones de puertos origen distintos.
+	(esto problamente se deba a que TCP es servicio full-duplex: 
+			si existe una conexión TCP entre el proceso A que se ejecuta en un host y el proceso B que se 					ejecuta en otro host, entonces los datos de la capa de aplicación pueden fluir desde el proceso A 				al proceso B en el mismo instante que los datos de la capa de aplicación fluyen del proceso B al 				proceso A.)
+			
+4. Compare TCP y UDP en cuanto a:
+
+	a. Confiabilidad
+		
+		TPC
+			TCP confía en muchos de los principios básicos, incluyendo los mecanismos de detección de errores, 			las retransmisiones, corrección de errores utilizando sumas de verificación, los reconocimientos 				acumulativos, los temporizadores y los campos de cabecera para los números de secuencia y de 					reconocimiento.
+			Crea un servicio de transferencia de datos fiable sobre el servicio de mejor
+			esfuerzo pero no fiable de IP. El servicio de transferencia de datos fiable de TCP garantiza
+			que el flujo de datos que un proceso extrae de su buffer de recepción TCP no está corrom-
+			pido, no contiene huecos, ni duplicados y está en orden; es decir, el flujo de bytes es exacta-
+			mente el mismo flujo que fue enviado por el sistema terminal existente en el otro extremo
+			de la conexión.  
+		
+		UDP
+		
+			UDP es menos confiable en comparación con TCP. No garantiza la entrega de datos ni el orden de 					entrega. Los segmentos UDP pueden perderse o llegar desordenados sin corrección automática..
+		
+	b. Multiplexación.
+	
+		Un proceso puede tener uno o varios sockets, por tanto la capa de transporte entrega los datos al 				socket (y no directamente a la aplicación), para identificar los sockets, éstos tienen un 						identificador único. Cada segmento de la capa de transporte contiene un campo para
+		poder entregar los datos al socket adecuado. En el receptor, la capa de transporte examina estos 				campos para identificar el socket receptor y lo envía (demultiplexación).
+
+		Denominamos multiplexación al trabajo de reunir los datos en el host origen desde diferentes sockets, 			encapsulando los fragmentos de datos
+		con la información de cabecera (que se usará en la demultiplexación).
+		
+		Mux:Proceso mediante el cual multiples señales o flujos de datos independientes se combinan en un solo
+			canal o medio de transmision. La idea es maximizar la eficiencia del canal compartido, permitiendo
+			que varias fuentes de datos transmitan a traves del mismo medio al mismo tiempo.
+	
+		Demux:Proceso inverso a la multiplexacion, en el cual el flujo de datos combinado se separa en sus
+			  señales o flujos originales. En el receptor, el demultpliexador extrae cada flujo de datos
+			  individual del flujo multiplexado para dirigilo al destino correspondiente.
+			  
+		TCP(orientado a la conexion)
+		
+			El socket TCP queda identificado por una tupla de cuatro elementos: dirección IP de origen, número 			de puerto de origen, dirección IP de destino, número de puerto de destino. Por lo tanto, cuando un 			segmento TCP llega a un host procedente de la red, el host emplea los cuatro valores para dirigir
+			(demultiplexar) el segmento al socket apropiado.
+			
+		UDP(Sin conexion)
+			El socket UDP queda completamente identificado por una tupla que consta de una dirección IP de 					destino y un número de puerto de destino. En consecuencia, si dos segmentos UDP tienen diferentes
+			direcciones IP y/o números de puerto de origen, pero la misma dirección IP de destino y elmismo 				número puerto de destino, entonces los dos segmentos se enviarán al mismo proceso de destino a 					través del mismo socket de destino.
+	
+	c. Orientado a la conexión.
+	
+		TCP
+			Establece una conexión antes de la transmisión de datos y asegura que ambas partes estén 						sincronizadas en términos de secuencia de datos y control de flujo.
+		
+		UDP
+			No se necesita conexión para iniciar y finalizar una transferencia de datos
+			
+	d. Controles de congestión.
+		
+		TCP
+			Proporciona mecanismos de control de congestión. Los mecanismos de control de congestión de TCP 				evitan que cualquier conexión TCP inunde con una cantidad de tráfico excesiva los enlaces y 					routers existentes entre los hosts que están comunicándose. Esto se consigue regulando la
+			velocidad a la que los lados emisores de las conexiones TCP pueden enviar tráfico a la red.
+			Posee un mecanismo que indica al emisor cuánto espacio libre hay en el búfer de almacenamiento del
+			receptor (ventana de recepción). Ayuda a controlar el flujo de datos para evitar la congestión y
+			garantizar una comunicación eficiente, permitiendo que el emisor ajuste la cantidad de datos 					enviados en función de la capacidad disponible en el receptor.
+			
+		UDP
+			El tráfico UDP no está regulado. Una aplicación que emplee el protocolo de transporte UDP
+			puede enviar los datos a la velocidad que le parezca, durante todo el tiempo que quiera.
+		
+	e. Utilización de puertos.
+
+		TCP
+			Como está orientado a la conexión, establece una conexión punto a punto entre dos dispositivos, 				por lo que cada conexión está limitada a dos procesos que intercambian datos. Utiliza números de 				puerto para identificar aplicaciones específicas.
+			
+		UDP
+			Permite que muchos clientes o procesos envíen datos por el mismo socket. Utiliza números de puerto 			para identificar aplicaciones específicas.
+			
+	
+5. La PDU de la capa de transporte es el segmento. Sin embargo, en algunos contextos suele utilizarse el 		   término datagrama. Indique cuando.
+
+	Cuando se trata del protocolo UDP, el termino datagrama se utiliza para su PDU. Aunque, dependiendo el
+	contexto, tambien se usa datagrama para referirse a los paquetes de la capa de red, mientras que a los
+	segmentos TCP y UDP se les llama simplemente paquetes.
+
+6. Describa el saludo de tres vías de TCP. ¿UDP tiene esta característica?
+
+	También conocido como protocolo de enlace de TCP, es un método utilizado
+	por TCP para establecer una conexión confiable entre dos dispositivos en una
+	red. Es un método de tres pasos que requiere que tanto el cliente como el
+	servidor intercambien segmentos SYN y ACK antes de que comience la
+	comunicación de datos real.
+	
+	Paso 1 (SYN) – El cliente inicia el proceso enviando un segmento al servidor
+	con el bit SYN establecido y un número de secuencia inicial (ISN) generado de
+	manera pseudoaleatoria. Este es importante para identificar y ordenar los datos
+	en la conexión.
+	
+	Paso 2 (SYN/ACK) – El servidor recibe el segmento del cliente, reconoce el bit
+	SYN y responde enviando un segmento de respuesta con los bits SYN y ACK
+	establecidos. En este, el servidor incluye su propio número de secuencia inicial
+	(ISN), que también es elegido de manera pseudoaleatoria.
+	El servidor también reconoce el ISN del cliente, lo que indica que ha recibido
+	correctamente el paquete de solicitud de conexión.
+	
+	Paso 3 (ACK) – El cliente recibe la respuesta del servidor, reconociendo el ISN
+	del servidor. El cliente responde enviando un segmento de confirmación con el
+	bit ACK establecido, confirmando que ha recibido correctamente la respuesta
+	del servidor. Ambos establecen una conexión confiable con la cual iniciarán la
+	transferencia de datos real.
+	
+	(DATO. Se abuso mucho de este sistema para hacer los primeros ataques DOS, haciendo grandes cantidades
+	de solicitudes SYN a los servers a los que se queria atacar. Se creo un metodo que evita que pase esto
+	denomidado "Cookies SYN", no voy a ponerme a explicar pero basicamente es un ISN especial hecho con hash
+	que el server genera y le entrega al cliente, luego el cliente tiene que devolverlo. No es infalible)
+	
+	En UDP no se utiliza nada similar ya no se establece ninguna conexión
+	
+7. Investigue qué es el ISN (Initial Sequence Number). Relaciónelo con el saludo de tres vías.
+	
+	Initial Sequence Number (ISN) se refieren al número de secuencia único de 32 bits asignado a cada nueva 		conexión en una comunicación TCP. Ayuda a que no entren en conflicto los bytes de datos transmitidos a 			través de una conexión TCP. Un ISN es único para cada conexión y está separado por cada dispositivo. Para 		el ISN se utiliza un contador que se incrementa cada 4 mseg.
+	El ISN ayudar a identificar, controlar el origen y mantener el orden de los segmentos de datos 					transmitidos entre el cliente y el servidor.(ampliar? podria estar mejor explicado)
+
+8. Investigue qué es el MSS. ¿Cuándo y cómo se negocia?
+
+	El tamaño de la ventana de recepción TCP es la cantidad de datos de
+	recepción (en bytes) que se pueden almacenar en búfer durante una conexión.
+	
+	En lugar de usar un tamaño de ventana de recepción predeterminado
+	codificado de forma rígida, TCP se ajusta a incrementos pares del tamaño
+	máximo de segmento (MSS).
+	
+	Maximum Segment Size es un campo de los encabezados que indica el
+	tamaño más grande de datos que puede tener un segmento sin ser
+	fragmentado. El MSS mide la parte de un paquete que no tiene encabezado, lo
+	que se conoce como carga útil. El MSS está determinado por otra métrica que
+	tiene que ver con el tamaño de los paquetes: MTU, o la unidad máxima de
+	transmisión, que sí incluye los encabezados TCP e IP (Protocolo de Internet).
+	El MSS es igual a la MTU menos el tamaño de un encabezado TCP y un
+	encabezado IP:
+	
+	MTU - (encabezado TCP + encabezado IP) = MSS
+	
+	Una de las principales diferencias entre la MTU y el MSS es que si un paquete
+	supera la MTU de un dispositivo, se divide en trozos más pequeños, o "se
+	fragmenta." En cambio, si un paquete supera el MSS, se descarta y no se
+	entrega.
+	
+	El MSS se negocia durante la configuración de la conexión, es decir, durante el
+	saludo de tres vías.
+
+9. Utilice el comando ss (reemplazo de netstat) para obtener la siguiente información de su
+   PC:
+	
+	a. Para listar las comunicaciones TCP establecidas.
+	
+		ss -t
+		
+		-t, --tcp
+              Display TCP sockets.
+
+	b. Para listar las comunicaciones UDP establecidas.
+	
+		ss -u
+	
+		-u, --udp
+              Display UDP sockets.
+
+	c. Obtener sólo los servicios TCP que están esperando comunicaciones
+	
+		ss -t -l
+	
+		-t, --tcp
+              Display TCP sockets.
+		-l, --listening
+              Display only listening sockets (these are omitted by default).
+
+		
+	
+	d. Obtener sólo los servicios UDP que están esperando comunicaciones.
+	
+		ss -u -l
+		
+		-u, --udp
+              Display UDP sockets.
+		l, --listening
+              Display only listening sockets (these are omitted by default).
+	
+	e. Repetir los anteriores para visualizar el proceso del sistema asociado a la conexión.
+	
+	
+		ss -t -p
+		ss -u -p
+		ss -t -l -p
+		ss -u -l -p
+		
+		-p, --processes
+              Show process using socket.
+
+	
+	f. Obtenga la misma información planteada en los items anteriores usando el comando
+	   netstat.
+
+		netstat -t
+		netstat -u
+		netstat -t -l
+		netstat -u -l
+		sudo netstat -t -p
+		sudo netstat -u -p
+		sudo netstat -t -l -p
+		sudo netstat -u -l -p
+		
+		
+10. ¿Qué sucede si llega un segmento TCP con el flag SYN activo a un host que no tiene
+	ningún proceso esperando en el puerto destino de dicho segmento (es decir, el puerto
+	destino no está en estado LISTEN)?
+	
+	 	TCP envia rst(creo?)DING DING DING
+	 	
+	 	Si no hay proceso en estado LISTEN en el puerto destino, el host enviara un
+		segmento con la flag RST (reset) activado para indicar que la conexión no se
+		puede establecer en dicho puerto. De esta manera informará al remitente que
+		no se puede establecer la conexión en ese momento para que no siga enviando 
+		segmentos.
+	 			
+	a. Utilice hping3 para enviar paquetes TCP al puerto destino 22 de la máquina virtual
+	   con el flag SYN activado.
+	
+		sudo hping3 -S -p 22 localhost
+	
+		-S --syn
+              Set SYN tcp flag.
+
+		-p --destport [+][+]dest port
+              Set destination port, default is 0. If '+' character precedes dest port number (i.e.
+              +1024)  destination  port  will  be increased for each reply received. If double '+'
+              precedes dest port number (i.e. ++1024), destination port will be increased for each
+              packet  sent.   By  default  destination  port  can  be modified interactively using
+              CTRL+z.
+	
+	b. Utilice hping3 para enviar paquetes TCP al puerto destino 40 de la máquina virtual
+	   con el flag SYN activado.
+	
+		sudo hping3 -S -p 40 localhost
+	
+	c. ¿Qué diferencias nota en las respuestas obtenidas en los dos casos anteriores?
+	   ¿Puede explicar a qué se debe? (Ayuda: utilice el comando ss visto anteriormente).
+	
+		En el puerto 22 se tiene el flag SA , que corresponde a cuando el puerto
+		destino está abierto, es decir, los flags SYN/ACK están activados y se
+		pudo establecer la comunicación. Por su parte, en el 40 se tiene el flag
+		RA, que corresponde a cuando el puerto destino está cerrado, es decir
+		RST/ACK están activados y no se pudo establecer la comunicación.
+		
+1. ¿Qué sucede si llega un datagrama UDP a un host que no tiene ningún proceso
+   esperando en el puerto destino de dicho datagrama (es decir, que dicho puerto no está en
+   estado LISTEN)?
+   
+   	Si no hay proceso en estado LISTEN en el puerto destino se responderá con
+	un ICMP “Destination Unreachable” (esto es otro protocolo de IP). Este
+	mensaje ICMP indica que el puerto o el host destino no están disponibles.
+	Sin embargo, este paquete ICMP se puede perder y UDP no generará ninguna
+	notificación al remitente ya que se trata de un protocolo sin conexión y no
+	confiable.
+	
+	a. Utilice hping3 para enviar datagramas UDP al puerto destino 5353 de la máquina
+	   virtual.
+	
+		sudo hping3 -S --udp-p 5353 localhost
+		
+		output(tuve que cortar con ctrl+c):
+		
+		PING localhost (lo 127.0.0.1): udp mode set, 28 headers + 0 data bytes
+		--- localhost hping statistic ---
+		211 packets transmitted, 0 packets received, 100% packet loss
+		round-trip min/avg/max = 0.0/0.0/0.0 ms
+
+	
+	b. Utilice hping3 para enviar datagramas UDP al puerto destino 40 de la máquina
+	   virtual.
+	   
+	   Hecho. Todos inalcanzables. Como ella.
+	
+	c. ¿Qué diferencias nota en las respuestas obtenidas en los dos casos anteriores?
+	   ¿Puede explicar a qué se debe? (Ayuda: utilice el comando ss visto anteriormente).
+		
+		La diferencia en este caso es que en el puerto 5353 hay un proceso
+		escuchando (igualmente no se indica que el datagrama llego y eso es
+		razonable ya que se trata del protocolo UDP) y en el 40 no. En el caso
+		del puerto 40, se envía un ICMP que indica que el puerto es
+		inalcanzable.
+				
+12. Investigue los distintos tipos de estado que puede tener una conexión
+	TCP. Ver https://users.cs.northwestern.edu/~agupta/cs340/project2/TCPIP_State_Transition_Diagram.pdf
+	
+	Una conexión atraviesa una serie de estados a lo largo de su ciclo de vida.
+	Estos estados incluyen: LISTEN, SYN-SENT, SYN-RECEIVED,
+	ESTABLISHED, FIN-WAIT-1, FIN-WAIT-2, CLOSE-WAIT, CLOSING, LAST-
+	ACK, TIME-WAIT y el estado ficticio CLOSED. El estado CLOSED es ficticio
+	porque representa la situación en la que no existe un Bloque de Control de
+	Transmisión (TCB), lo que significa que no hay conexión alguna. Para resumir,
+	estos estados tienen los siguientes significados:
+	
+	 LISTEN representa la espera de una solicitud de conexión procedente
+	de cualquier TCP remoto y puerto.
+	
+	 SYN-SENT representa la espera de una solicitud de conexión
+	coincidente después de haber enviado una solicitud de conexión.
+	
+	 SYN-RECEIVED representa la espera de una confirmación de solicitud
+	de conexión después de haber recibido y enviado una solicitud de
+	conexión.
+	
+	 ESTABLISHED representa una conexión abierta, lo que permite que los
+	datos recibidos sean entregados al usuario. Es el estado normal
+	durante la fase de transferencia de datos de la conexión.
+	
+	 FIN-WAIT-1 representa la espera de una solicitud de terminación de
+	conexión procedente del TCP remoto, o la confirmación de la solicitud
+	de terminación de conexión previamente enviada.
+	
+	 FIN-WAIT-2 representa la espera de una solicitud de terminación de
+	conexión procedente del TCP remoto.
+	
+	 CLOSE-WAIT representa la espera de una solicitud de terminación de
+	conexión procedente del usuario local.
+	
+	 CLOSING representa la espera de una confirmación de la solicitud de
+	terminación de conexión procedente del TCP remoto.
+	
+	 LAST-ACK representa la espera de una confirmación de la solicitud de
+	terminación de conexión previamente enviada al TCP remoto (la cual
+	incluye una confirmación de su solicitud de terminación de conexión).
+	
+	 TIME-WAIT representa la espera de suficiente tiempo para asegurar
+	que el TCP remoto ha recibido la confirmación de su solicitud de
+	terminación de conexión.
+	
+	 CLOSED representa la ausencia total de una conexión activa.
+	
+	Una conexión TCP avanza de un estado a otro en respuesta a diversos
+	eventos, tales como llamadas del usuario (OPEN, SEND, RECEIVE, CLOSE,
+	ABORT y STATUS), segmentos entrantes, especialmente aquellos que
+	contienen las banderas SYN, ACK, RST y FIN, así como también mediante el
+	uso de temporizadores."
+
+
+13. Dada la siguiente salida del comando ss, responda:
+	
+	Netid State Recv-Q Send-Q Local Address:Port Peer Address:Port Process
+	tcp LISTEN 0 128 *:22 *:* users:(("sshd",pid=468,fd=29))
+	tcp LISTEN 0 128 *:80 *:* users:(("apache2",pid=991,fd=95))
+	udp LISTEN 0 128 163.10.5.222:53 *:* users:(("named",pid=452,fd=10))
+	tcp ESTAB 0 0 163.10.5.222:59736 64.233.163.120:443 users:(("x-www-browser",pid=1079,fd=51))
+	tcp CLOSE-WAI T 0 0 163.10.5.222:41654 200.115.89.30:443 users:(("x-www-browser",pid=1079,fd=50))
+	tcp ESTAB 0 0 163.10.5.222:59737 64.233.163.120:443 users:(("x-www-browser",pid=1079,fd=55))
+	tcp ESTAB 0 0 163.10.5.222:33583 200.115.89.15:443 users:(("x-www-browser",pid=1079,fd=53))
+	tcp ESTAB 0 0 163.10.5.222:45293 64.233.190.99:443 users:(("x-www-browser",pid=1079,fd=59))
+	tcp LISTEN 0 128 *:25 *:* users:(("postfix",pid=627,fd=3))
+	tcp ESTAB 0 0 127.0.0.1:22 127.0.0.1:41220 users:(("sshd",pid=1418,fd=3),("sshd",pid=1416,fd=3))
+	tcp ESTAB 0 0 163.10.5.222:52952 64.233.190.94:443 users:(("x-www-browser",pid=1079,fd=29))
+	tcp TIME-WAIT 0 0 163.10.5.222:36676 54.149.207.17:443 users:(("x-www-browser",pid=1079,fd=3))
+	tcp ESTAB 0 0 163.10.5.222:52960 64.233.190.94:443 users:(("x-www-browser",pid=1079,fd=67))
+	tcp ESTAB 0 0 163.10.5.222:50521 200.115.89.57:443 users:(("x-www-browser",pid=1079,fd=69))
+	tcp SYN-SENT 0 0 163.10.5.222:52132 43.232.2.2:9500 users:(("x-www-browser",pid=1079,fd=70))
+	tcp ESTAB 0 0 127.0.0.1:41220 127.0.0.1:22 users:(("ssh",pid=1415,fd=3))
+	udp LISTEN 0 128 127.0.0.1:53 *:* users:(("named",pid=452,fd=9))
+	
+	a. ¿Cuántas conexiones hay establecidas?
+			  
+		9
+			  
+	b. ¿Cuántos puertos hay abiertos a la espera de posibles nuevas conexiones?
+	
+		5
+		
+	c. El cliente y el servidor de las comunicaciones HTTPS (puerto 443), ¿residen en la
+	   misma máquina?
+	
+		No, deberían coincidir las IPS???
+		
+		No, el cliente y el servidor de las comunicaciones HTTPS (puerto 443) no residen en la misma máquina. 			En tu lista de conexiones, puedes ver varias entradas con el estado “ESTAB” (establecido) que indican 			conexiones activas entre tu máquina local (163.10.5.222) y varias direcciones IP remotas en el puerto 			443. Esto significa que tu máquina está actuando como cliente y se está comunicando con servidores 				remotos a través del puerto 443 para establecer conexiones HTTPS seguras
+	 
+	d. El cliente y el servidor de la comunicación SSH (puerto 22), ¿residen en la misma
+	   máquina?
+	   
+	   	Sí, en tu lista de conexiones, puedes ver una entrada con el estado “ESTAB” (establecido) que indica 			una conexión activa entre la dirección IP local 127.0.0.1 en el puerto 22 y la misma dirección IP en 			el puerto 41220. Esto significa que el cliente y el servidor SSH están en la misma máquina, utilizando 		la dirección de loopback (127.0.0.1) para comunicarse
+	   	
+	   	Si, tanto la IP Local como la Destino son la misma. Una esta en el
+		puerto 22 y la otra en el 41220. En el puerto 22 está el proceso SSHD, y
+		en el 41220 está corriendo el proceso SSH.
+	   		
+	e. Liste los nombres de todos los procesos asociados con cada comunicación. Indique
+	   para cada uno si se trata de un proceso cliente o uno servidor.
+	
+    	SSH (puerto 22)
+        	Proceso: sshd (servidor)
+        	Proceso: ssh (cliente)
+	
+    	HTTP (puerto 80)
+        	Proceso: apache2 (servidor)
+	
+    	DNS (puerto 53)
+        	Proceso: named (servidor)
+	
+    	SMTP (puerto 25)
+        	Proceso: postfix (servidor)
+	
+    	HTTPS (puerto 443)
+        	Proceso: x-www-browser (cliente)
+	
+	Aquí tienes un desglose más detallado de las conexiones HTTPS activas:
+	
+    	163.10.5.222:59736 -> 64.233.163.120:443 (x-www-browser, cliente)
+    	163.10.5.222:41654 -> 200.115.89.30:443 (x-www-browser, cliente)
+    	163.10.5.222:59737 -> 64.233.163.120:443 (x-www-browser, cliente)
+    	163.10.5.222:33583 -> 200.115.89.15:443 (x-www-browser, cliente)
+    	163.10.5.222:45293 -> 64.233.190.99:443 (x-www-browser, cliente)
+    	163.10.5.222:52952 -> 64.233.190.94:443 (x-www-browser, cliente)
+    	163.10.5.222:36676 -> 54.149.207.17:443 (x-www-browser, cliente)
+    	163.10.5.222:52960 -> 64.233.190.94:443 (x-www-browser, cliente)
+    	163.10.5.222:50521 -> 200.115.89.57:443 (x-www-browser, cliente)
+    	163.10.5.222:52132 -> 43.232.2.2:9500 (x-www-browser, cliente)
+	
+	
+	Los que están en estado LISTEN y/o en puertos del 0 al 1023 son
+	procesos servidores.
+		
+		▪ SSHD: Servidor
+		▪ APACHE2: Servidor
+		▪ NAMED: Servidor
+		▪ X-WWW-BROWSER: Cliente (preguntar porque)
+		▪ POSTFIX: Servidor
+		▪ SSH: Cliente
+	
+	f. ¿Cuáles conexiones tuvieron el cierre iniciado por el host local y cuáles por el
+	   remoto?
+	   
+    La conexión con estado CLOSE-WAIT:
+        
+        tcp CLOSE-WAIT 0 0 163.10.5.222:41654 200.115.89.30:443 users:(("x-www-browser",pid=1079,fd=50))
+        
+        Esto sugiere que el host remoto (200.115.89.30) inició el cierre de la conexión y el host local 				(163.10.5.222) está esperando a que la aplicación local cierre la conexión.
+
+    La conexión con estado TIME-WAIT:
+        
+        tcp TIME-WAIT 0 0 163.10.5.222:36676 54.149.207.17:443 users:(("x-www-browser",pid=1079,fd=3))
+        
+        Esto indica que el host local (163.10.5.222) ha cerrado la conexión y está esperando para asegurarse 			de que el host remoto (54.149.207.17) ha recibido el cierre.
+
+	g. ¿Cuántas conexiones están aún pendientes por establecerse?
+
+		En la lista que has proporcionado, hay una conexión en estado SYN-SENT:
+	
+    	tcp SYN-SENT 0 0 163.10.5.222:52132 43.232.2.2:9500 users:(("x-www-browser",pid=1079,fd=70))
+	
+		Esto indica que hay una conexión pendiente por establecerse. Las conexiones en estado SYN-SENT están 			esperando una respuesta del servidor para completar el establecimiento de la conexión TCP
+
+
+14. Dadas las salidas de los siguientes comandos ejecutados en el cliente y el servidor,
+	responder:
+	
+	servidor# ss -natu | grep 110
+	tcp LISTEN 0 0 *:110 *:*
+	tcp SYN-RECV 0 0 157.0.0.1:110 157.0.11.1:52843
+	cliente# ss -natu | grep 110
+	tcp SYN-SENT 0 1 157.0.11.1:52843 157.0.0.1:110
+	
+	a. ¿Qué segmentos llegaron y cuáles se están perdiendo en la red?
+		
+		SYN llego al servidor, pero SYNACK no llego al cliente
+		
+		
+
+    Servidor:
+        
+        tcp LISTEN 0 0 *:110 *:*: El servidor está escuchando en el puerto 110.
+        
+        tcp SYN-RECV 0 0 157.0.0.1:110 157.0.11.1:52843: El servidor ha recibido un segmento SYN del cliente y 		está esperando la confirmación (ACK) del cliente para completar el establecimiento de la conexión.
+	
+    Cliente:
+        tcp SYN-SENT 0 1 157.0.11.1:52843 157.0.0.1:110: El cliente ha enviado un segmento SYN al servidor 				y está esperando la respuesta (SYN-ACK) del servidor.
+	
+	Análisis de los segmentos:
+	
+    	Segmentos recibidos:
+        	
+        	El servidor ha recibido el segmento SYN del cliente, como se indica por el estado SYN-RECV en el 				servidor.
+	
+    	Segmentos perdidos:
+        	
+        	El cliente está en estado SYN-SENT, lo que indica que está esperando el segmento SYN-ACK del 					servidor. Esto sugiere que el segmento SYN-ACK del servidor no ha llegado al cliente
+		
+	b. ¿A qué protocolo de capa de aplicación y de transporte se está intentando conectar el
+		cliente?
+		
+		Al protocolo POP3 de la capa de aplicación con el protocolo TCP(puerto 110)
+	
+	c. ¿Qué flags tendría seteado el segmento perdido?
+
+
+		SYN: 1
+		ACK: 1
+
+15. Use CORE para armar una topología como la siguiente, sobre la cual deberá realizar:
+	
+	a. En ambos equipos inspeccionar el estado de las conexiones y mantener abiertas
+	   ambas ventanas con el comando corriendo para poder visualizar los cambios a
+	   medida que se realiza el ejercicio.
+	   Ayuda: watch -n1 ’ss -nat’.
+	   
+	   -n: Muestra las direcciones IP y los números de puerto en formato
+		   numérico en lugar de resolver los nombres de host y los servicios.
+	   
+	   -a: Muestra todas las conexiones, incluidas las que están en estado
+		  "LISTENING" (escuchando) y "ESTABLISHED" (establecidas).
+	
+	   -t: Filtra los resultados para mostrar solo conexiones TCP.
+	   	
+	
+	b. En Servidor, utilice la herramienta ncat para levantar un servicio que escuche en el
+	   puerto 8001/TCP. Utilice la opción -k para que el servicio sea persistente. Verifique el
+	   estado de las conexiones.
+
+	c. Desde CLIENTE1 conectarse a dicho servicio utilizando también la herramienta
+	   ncat. Inspeccione el estado de las conexiones.
+	
+	d. Iniciar otra conexión desde CLIENTE1 de la misma manera que la anterior y verificar
+	   el estado de las conexiones. ¿De qué manera puede identificar cada conexión?
+	
+	e. En base a lo observado en el item anterior, ¿es posible iniciar más de una conexión
+	   desde el cliente al servidor en el mismo puerto destino? ¿Por qué? ¿Cómo se
+	   garantiza que los datos de una conexión no se mezclarán con los de la otra?
+	
+	f. Analice en el tráfico de red, los flags de los segmentos TCP que ocurren cuando:
+	
+		i. Cierra la última conexión establecida desde CLIENTE1. Evalúe los estados de las
+	   	   conexiones en ambos equipos.
+	
+		ii. Corta el servicio de ncat en el servidor (Ctrl+C). Evalúe los estados de las
+	 		conexiones en ambos equipos.
+	
+		iii. Cierra la conexión en el cliente. Evalúe nuevamente los estados de las
+			 conexiones.

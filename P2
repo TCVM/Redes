@@ -1,0 +1,455 @@
+1. ¿Cuál es la función de la capa de aplicación?
+
+	Provee servicios de comunicacion a los usuarios ( Capa 8 ;) ) y
+	a las aplicaciones, incluye las aplicaciones mismas.
+	
+	Existe modelo de comunicacion Machine to machine (M2M),
+	no hay usuarios (personas).
+
+	Interfaz con el usuario -User Interface (UI)- u otras
+	aplicaciones/servicios.
+	
+	Las aplicaciones que usan la red pertenecen a esta capa.
+	Los protocolos que implementan las aplicaciones tambien.
+
+	Existen aplicaciones que NO son de red que deben trabajar
+	con aplicaciones/servicios para lograr acceso a la red.
+	
+	(comunicacion usuario-maquina/maquina-maquina a travez de aplicaciones/servicios que usan la red o
+	o aplicaciones que se comunican con estas)
+	
+2. Si dos procesos deben comunicarse:
+	
+	a. ¿Cómo podrían hacerlo si están en diferentes máquinas?
+	
+		Los procesos en dos sistemas terminales diferentes se comunican entre ellos intercambiando
+		mensajes a traves de la red de computadoras. Un proceso emisor crea y envia mensajes a la 
+		red; un proceso receptor recibe estos mensajes y posiblemente responde devolviendo mensajes.
+	
+	b. Y si están en la misma máquina, ¿qué alternativas existen?	  
+	
+		Cuando los procesos se ejecutan en el mismo sistema terminal, pueden comunicarse entre si 
+		mediante la comunicacion entre procesos aplicando las reglas gobernadas por el SO del sis-
+		tema terminal.
+		
+3. Explique brevemente cómo es el modelo Cliente/Servidor. De un ejemplo de un sistema Cliente/Servi-
+   dor en la “vida cotidiana” y un ejemplo de un sistema informático que siga el modelo Cliente/Servidor.
+   ¿Conoce algún otro modelo de comunicación?
+
+	Las aplicaciones cliente/servidor son aplicaciones distribuidas. El programa cliente y el programa
+	servidor interactua enviandose mensajes entre si a traves de internet. En este nivel de abstraccion,
+	los routers,los enlaces y los restantes componentes de internet sirven de forma colectiva como una caja
+	negra que transfiere mensajes entre los componentes distribuidos entre los que establece la comunicacion
+	de una aplicacion de internet.
+
+	Ejemplo cotidiano: proveedor de diarios? . Ejemplo de sistema informatico: Netflix. 
+	Mail 
+	
+4. Describa la funcionalidad de la entidad genérica “Agente de usuario” o “User agent”.
+
+	Un agente de usuario es una aplicación informática que funciona como cliente en un protocolo de red; el 
+	nombre se aplica generalmente para referirse a aquellas aplicaciones que acceden a la World Wide Web.
+
+5. ¿Qué son y en qué se diferencian HTML y HTTP?
+
+	HTML es un lenguaje de etiquetas para documentos diseñados para ser mostrados en navegadores web. Define el
+	contenido y la estructura de la pagina.
+	HTTP es un protocolo de capa de aplicacion diseñado para transferir informacion entre dispositivos 
+	Aconectados a la web, corre sobre otras capas de la pila de protocolos de red.
+	Uno es un lengua para diseñar paginas web y el otro es un protocolo para transferencia de informacion.
+	
+6. HTTP tiene definido un formato de mensaje para los requerimientos y las respuestas.
+   (Ayuda: apartado “Formato de mensaje HTTP”, Kurose).
+
+	a. ¿Qué información de la capa de aplicación nos indica si un mensaje es de
+		requerimiento o de respuesta para HTTP? ¿Cómo está compuesta dicha
+		información?¿Para qué sirven las cabeceras?
+	
+	b. ¿Cuál es su formato? (Ayuda: https://developer.mozilla.org/es/docs/Web/HTTP/Headers)
+	
+	c. Suponga que desea enviar un requerimiento con la versión de HTTP 1.1 desde
+	   curl/7.74.0 a un sitio de ejemplo como www.misitio.com para obtener el recurso
+	   /index.html. En base a lo indicado, ¿qué información debería enviarse mediante
+	   encabezados? Indique cómo quedaría el requerimiento.
+
+	a. Un mensaje de solicitud(requerimiento) puede constar de una o mas lineas.
+	   La primera linea se denomina "linea de solicitud", las lineas que le siguen son llamadas "lineas de
+	   cabecera".
+	   La linea de solicitud consta de tres campos: el campo metodo, el campo URL y el campo version HTTP.
+	   El campo metodo queespecifica el metodo que puede tomar diferentes valores, entre los que se incluyen
+	   GET, POST, HEAD, PUT y DELETE. La inmensa mayoria de los mensajes de solicitud utilizar el metodo GET.
+	   Este metodo se emplea cuando el navegador solicita un objeto, identificando dicho objeto en el campo
+	   URL. El campo correspondiente a la version se explica por si mismo.
+	   
+	   .La linea de cabecera Host especifica el host en el que reside el objeto.
+	   .La linea de cabecera Connection especifica que si se desea trabajar con una conexion persistente o no
+	   .La linea de cabecera User-Agent especifica el agente de usuario (el tipo de navegador) es util porque
+	    el servidor puede enviar versiones diferentes del mismo objeto a diferentes agentes de usuario(el
+	    mismo URL direcciona a cada una de las versiones).
+	   .La linea de cabecera Accept-language indica la preferencia de idioma en la que se espera el objeto, en
+	    caso de que no exista se envia la version default 
+	   
+	   Existe el campo "cuerpo de entidad", este campo se utiliza como formulario para el usuario con el
+	   metodo POST y tambien lo utilizan los formularios HTML con el metodo GET.
+	   
+	   .El metodo HEAD es similar al metodo GET. Cuando el servidor recibe una solicitud con el metodo HEAD,
+	    responde con un mensaje HTTP, pero excluye el objeto solicitado.
+	   .El metodo PUT permite a un usuario cargar un objeto en una ruta especifica (directorio) en un
+	    servidor web determinado.
+	   .El metodo DELETE permite a un usuario o a una aplicacion borrar un objeto de un servidor web.
+
+
+		Un mensaje de respuesta HTTP tiene tres secciones: una linea de estado inicial, seis lineas de
+		cabecera y el cuerpo de entidad. 
+		.El cuerpo entidad contiene el objeto solicitado. 
+		.La linea de estado contiene tres campos: el que especifica la version del protocolo, el
+		 correspondiente al codigo de estado y el tercero contiene el mensaje explicativo del estado
+		 correspondiente.
+		.Las linea de cabecera Connection: close para indicar al cliente que va a cerrar la conexion TCP
+		 despues de enviar el mensaje.
+		.La linea de cabecera DATE indica la hora y fecha en la que se creo la respuesta HTTP y fue enviada 
+		 por el servidor.
+		.La linea de cabecera SERVER indica que el mensaje fue generado por un web server Apache.
+		.La linea de cabecera Last-Modified especifica la fecha y hora en el objeto fue creado o modificado
+		 por ultima vez.
+		.La linea de cabecera Content-Length especifica el numero de bytes del objeto que esta siendo enviado.
+		.La linea de cabecera Content-Type indica que el objeto especificado en el cuerpo de entidad es texto
+		 HTML.
+		
+	b.	El formato es procedente de las especificaciones HTTP[RFC 2616].
+	
+	c.	   
+	   GET /www.misitio.com/index.html HTTP/1.1
+	   Host: www.misitio.com
+	   Connection: close
+	   User-Agent: Mozilla/4.0
+	   Accept-language: en
+
+7. Utilizando la VM, abra una terminal e investigue sobre el comando curl. Analice para qué
+   sirven los siguientes parámetros (-I, -H, -X, -s).
+   
+   curl es una herramienta para tranferir informacion de o a un server, usando uno de varios 
+   protocolos que soporta.
+   
+   
+   -H: Un header extra para incluir en la solicitud cuando se envia HTTP a un servidor. Se puede
+   	   especificar cualquier cantidad de numeros de headers extra. En caso de agregar uno, este
+   	   se va a usar por encima del interno.
+   -X: (HTTP) Especifica un metodo de solicitud personalizado para usar cuando se comunica con el servidor 
+   		HTTP. El metodo especificado se usara por encima del metodo predeterminado
+   	   (normalmente GET).
+   -s: Silent o quiet mode. No muestra la barra de progreso o mensajes de error. Silencia el Curl. Todavia 
+   	   puede devolver informacion que se le solicita.  
+   -I: (HTTP FTP FILE) devuelve solo los headers. Los servidores HTTP presentan el comando HEAD
+   	   el cual devuelve solo el header de un documento. Cuando se usan en un archivo FTP o un FILE, curl 
+   	   muestra el tamaño del archivo y el tiempo de su ultima modificacion.
+
+8. Ejecute el comando curl sin ningún parámetro adicional y acceda a
+   www.redes.unlp.edu.ar. Luego responda:
+	a. ¿Cuántos requerimientos realizó y qué recibió? Pruebe redirigiendo la salida
+	   (>) del comando curl a un archivo con extensión html y abrirlo con un
+	   navegador.
+	b. ¿Cómo funcionan los atributos href de los tags link e img en html?
+	c. Para visualizar la página completa con imágenes como en un navegador,
+	   ¿alcanza con realizar un único requerimiento?
+	d. ¿Cuántos requerimientos serían necesarios para obtener una página que
+	   tiene dos CSS, dos Javascript y tres imágenes? Diferencie cómo funcionaría
+	   un navegador respecto al comando curl ejecutado previamente.
+
+	a.Se realizo un requerimiento y hubo una respuesta(un html)
+	b.Los atributos href enlazan recursos externos al html, el navegador en se encarga de realizar solicitudes
+	  HTTP/HTTPS para adquirir dichos atributos.
+	c.No, se deberia hacer un requerimiento por cada imagen.
+	d.Harian falta 6 requerimientos en total. El comando curl solo devuelve el HTML, es necesario hacer 
+	  requerimientos de forma manual por cada elemento que sea necesario. Un navegador hace todos los 
+	  requerimientos directamente. 
+
+9. Ejecute a continuación los siguientes comandos:
+	curl -v -s www.redes.unlp.edu.ar > /dev/null
+	curl -I -v -s www.redes.unlp.edu.ar
+	a. ¿Qué diferencias nota entre cada uno?
+	b. ¿Qué ocurre si en el primer comando se quita la redirección a /dev/null? ¿Por
+		qué no es necesaria en el segundo comando?
+	c. ¿Cuántas cabeceras viajaron en el requerimiento? ¿Y en la respuesta?
+	
+	a.En el primero se especifica el uso del metodo GET y en el cuerpo de la entidad se especifica que hay
+	  4898 bytes de informacion.En el segundo se especifica el uso del metodo HEAD y no contiene el cuerpo 
+	  de la entidad.
+	  
+	b.Si se quita la redireccion, el mensaje devuelve el codigo HTML en vez del tamaño del archivo.
+		(dev/null descarta cualquiero output que se le dirija, en este caso, el cuerpo el del mensaje).
+	  En el segundo comando no hace falta porque el metodo HEAD solo hace requerimiento de los headers al HTTP
+	
+	c. viajaron 4 en el requerimiento y 7 de respuesta
+	
+10. ¿Qué indica la cabecera Date?
+	
+	.La linea de cabecera DATE indica la hora y fecha en la que se creo la respuesta HTTP y fue enviada
+	 por el servidor.
+	
+11. En HTTP/1.0, ¿cómo sabe el cliente que ya recibió todo el objeto solicitado de manera
+	completa? ¿Y en HTTP/1.1?
+	
+	En HTTP 1.0 se utiliza el Header Content-Lenght el cual indica que se obtuvo el peso completo del archivo
+	requerido, significando la completitud del mensaje entre otros indicadores. En HTTP/1.1 se puede utilizar
+	las mismas señales para determinarlo. 
+
+12. Investigue los distintos tipos de códigos de retorno de un servidor web y su significado.
+	Considere que los mismos se clasifican en categorías (2XX, 3XX, 4XX, 5XX).
+	
+	.200 OK:La solicitud se ha ejecutado con exito y se ha devuelto la informacion en el mensaje respuesta.
+	
+	.301 Moved permanently: El objeto solicitado ha sido movido de forma permanente; el nuevo URL se
+	 				        especifica en la linea de cabecera Location:del mensaje respuesta. El software
+	 				        cliente recuperara automaticamente el nuevo URL.
+	
+	.400 Bad Request: Se trata de un codigo de error generico que indica que la solicitud no ha sido
+	 				  comprendida por el servidor.
+	
+	.403 Access Forbidden: No posee autorizacion para acceder al documento.
+	
+	.404 Not Found: El documento solicitado no existe en el servidor.
+	
+	.405 Method Not Allowed: Metodo no permitido en el requerimiento.
+	
+	.418 I'm a teapot: When the server refuses because is PERMANENTLY a teapot. It's a teapot.
+	
+	.500 Internal Server Error (CGI Error)
+	
+	.501 Method Not Suportted: El servidor no comprende el metodo utilizado.
+	
+	.503 There's no more coffee(Service Unavailable, en realidad): A combined coffee/tea pot that is
+	 	 temporarily out of coffee should instead return 
+	
+	.505 HTTP Version Not Supported: La version de protocolo HTTP solicitada no es soportada por el servidor.
+	
+	 
+13. Utilizando curl, realice un requerimiento con el método HEAD al sitio
+	www.redes.unlp.edu.ar e indique:
+	
+	a. ¿Qué información brinda la primera línea de la respuesta?
+	b. ¿Cuántos encabezados muestra la respuesta?
+	c. ¿Qué servidor web está sirviendo la página?
+	d. ¿El acceso a la página solicitada fue exitoso o no?
+	e. ¿Cuándo fue la última vez que se modificó la página?
+	f. Solicite la página nuevamente con curl usando GET, pero esta vez indique que
+	   quiere obtenerla sólo si la misma fue modificada en una fecha posterior a la que
+	   efectivamente fue modificada. ¿Cómo lo hace? ¿Qué resultado obtuvo? ¿Puede
+	   explicar para qué sirve?
+	   
+	a. Especificia la version del protocolo usada(HTTP/1.1) y el codigo de retorno (200 OK)
+	b. 7 encabezados.
+	c. Apache/2.4.56 (Unix)
+	d. Fue exitoso, el codigo de retorno 200 OK lo asegura.
+	e. Sun, 19 mar 2023 19:04:46 GMT
+	f.  curl -H "If-Modified-Since: Tue, 01 Sep 2024 12:00:00 GMT" www.redes.unlp.edu.ar
+		Uso el parametro -H para añadir un encabezado personalizado al requerimiento y agrego el encabezado 
+		"if-Modified-Since: " para indicar que solo se desea la respuesta si solo fue modificada despues de 
+		la fecha especificada.
+	
+	14. Utilizando curl, acceda al sitio www.redes.unlp.edu.ar/restringido/index.php y siga las
+		instrucciones y las pistas que vaya recibiendo hasta obtener la respuesta final. Será de
+		utilidad para resolver este ejercicio poder analizar tanto el contenido de cada página como
+		los encabezados.	
+
+		-curl www.redes.unlp.edu.ar/restringido/index.php
+		-curl www.redes.unlp.edu.ar/Obtener-Usuario.php
+		-curl -H "Usuario-Redes: obtener" www.redes.unlp.edu.ar/Obtener-Usuario.php
+		-echo -n "redes:RYC"|base64
+		-curl -H "Authorization: basic cmVkZXM6TllD" www.redes.unlp.edu.ar/restringido/index.php
+		-curl www.redes.unlp.edu.ar/restringido/the-end.php
+		-curl -H "Authorization: basic cmVkZXM6TllD" www.redes.unlp.edu.ar/restringido/the-end.php
+
+
+	15. Utilizando la VM, realice las siguientes pruebas:
+		
+		a. Ejecute el comando ’curl www.redes.unlp.edu.ar/extras/prueba-http-1-0.txt’ y
+		   copie la salida completa (incluyendo los dos saltos de línea del final).
+		
+		b. Desde la consola ejecute el comando telnet www.redes.unlp.edu.ar 80 y
+	 	   luego pegue el contenido que tiene almacenado en el portapapeles. ¿Qué
+		   ocurre luego de hacerlo?
+		
+		c. Repita el proceso anterior, pero copiando la salida del recurso
+		   /extras/prueba-http-1-1.txt. Verifique que debería poder pegar varias veces el
+		   mismo contenido sin tener que ejecutar el comando telnet nuevamente.
+		   
+		c.A diferencia de http-1-0, el 1.1 permite mandar varios mensajes durante el tiempo que dura la
+		  conexion
+		
+	16. En base a lo obtenido en el ejercicio anterior, responda:
+
+		a. ¿Qué está haciendo al ejecutar el comando telnet?
+
+		b. ¿Qué método HTTP utilizó? ¿Qué recurso solicitó?
+
+		c. ¿Qué diferencias notó entre los dos casos? ¿Puede explicar por qué?
+		
+		d. ¿Cuál de los dos casos le parece más eficiente? Piense en el ejercicio donde
+			analizó la cantidad de requerimientos necesarios para obtener una página
+			con estilos, javascripts e imágenes. El caso elegido, ¿puede traer asociado
+			algún problema?
+		
+		a.El comando telnet es usado para comunicacion interactiva con otro host usando el protocolo TELNET.
+		  Se utiliza para establecer una conexión con un equipo remoto a través de la red.
+		  Telnet es un protocolo de red que permite acceder a otros ordenadores de forma remota a través de
+		  una conexión TCP/IP. 
+		  
+		b.Uso el metodo GET, solicito el recurso /http/HTTP-1.1
+		
+		
+		c.Como se menciono previamente, el requerimiento con el protocolo HTTP 1.0 cerro sesion inmediatamente
+		  luego de devolver el recurso, el que poseia HTTP 1.1 mantuvo la conexion abierta por un periodo de
+		  tiempo para permitir mas requerimientos.
+		
+		d. Como todo en lo que es programacion, depende. En el caso propuesto, es mas eficiente utilizar
+		   conexion persistente ya que va a ser necesario realizar varios requerimientos a la pagina.
+		   Como problema lo que puede ocurrir es que un recurso tome por un tiempo prolongado la
+		   conexion, la bloquee y retrase la obtencion de otros recursos, esto se llama (head-of-line-
+		   blocking).
+		   
+		
+	17. En el siguiente ejercicio veremos la diferencia entre los métodos POST y GET. Para ello,
+		será necesario utilizar la VM y la herramienta Wireshark. Antes de iniciar considere:
+
+		■ Capture los paquetes utilizando la interfaz con IP 172.28.0.1. (Menú “Capture
+		  ->Options”. Luego seleccione la interfaz correspondiente y presione Start).
+
+		■ Para que el analizador de red sólo nos muestre los mensajes del protocolo http
+		  introduciremos la cadena ‘http’ (sin las comillas) en la ventana de especificación de
+		  filtros de visualización (display-filter). Si no hiciéramos esto veríamos todo el tráfico
+		  que es capaz de capturar nuestra placa de red. De los paquetes que son
+		  capturados, aquel que esté seleccionado será mostrado en forma detallada en la
+		  sección que está justo debajo. Como sólo estamos interesados en http ocultaremos toda la información
+		  que no es relevante para esta práctica (Información de trama, Ethernet, IP y TCP). Desplegar la 
+		  información correspondiente al protocolo HTTP bajo la leyenda “Hypertext Transfer Protocol”.
+		  
+		■ Para borrar la cache del navegador, deberá ir al menú “Herramientas->Borrar
+		  historial reciente”. Alternativamente puede utilizar Ctrl+F5 en el navegador para
+		  forzar la petición HTTP evitando el uso de caché del navegador.
+
+		■ En caso de querer ver de forma simplificada el contenido de una comunicación http,
+		  utilice el botón derecho sobre un paquete HTTP perteneciente al flujo capturado y
+		  seleccione la opción Follow TCP Stream.
+
+		a. Abra un navegador e ingrese a la URL: www.redes.unlp.edu.ar e ingrese al
+		   link en la sección “Capa de Aplicación” llamado “Métodos HTTP”. En la
+		   página mostrada se visualizan dos nuevos links llamados: Método GET y
+		   Método POST. Ambos muestran un formulario como el siguiente:
+		
+		b. Analice el código HTML
+		
+		c. Utilizando el analizador de paquetes Wireshark capture los paquetes
+		   enviados y recibidos al presionar el botón Enviar.
+		
+		d. ¿Qué diferencias detectó en los mensajes enviados por el cliente?
+		
+		e. ¿Observó alguna diferencia en el browser si se utiliza un mensaje u otro?		   
+
+		d. En el lado del GET los datos ingresados son enviados por url mientras que del lado del POST se
+		   envian por el cuerpo del formulario.
+		
+		e.En el caso de GET se puede observar en la url los datos.
+		
+	18. Investigue cuál es el principal uso que se le da a las cabeceras Set-Cookie y Cookie en
+		HTTP y qué relación tienen con el funcionamiento del protocolo HTTP.
+		
+		El principal uso de las cabeceras "Set-Cookie" y "Cookie" en HTTP es permitir
+		a los servidores y clientes(navegadores) mantener un estado persistente del usuario entre las
+		solicitudes y respuestas, a pesar de la naturaleza stateless del protocolo HTTP.
+		La Cookie es introducida al cliente mediante el mensaje en el header Set-Cookie: 
+				mensaje que indica un par (nombre,valor).
+				El nombre pertenece al host del servidor.
+				El valor es un identificador el cual corresponde a una entrada en la base de datos
+				de un sitio. 
+		
+		El cliente en cada requerimiento luego de haber almacenado la Cookie en un registro del navegador se
+		la enviara al servidor con el header Cookie, que contiene el identificador.
+		
+	19. ¿Cuál es la diferencia entre un protocolo binario y uno basado en texto? ¿De qué tipo
+		de protocolo se trata HTTP/1.0, HTTP/1.1 y HTTP/2?
+		
+		Un protocolo binario transmite datos en forma de patrones de bits que las
+		máquinas pueden entender directamente. Suele ser más eficiente en términos
+		de velocidad y uso de ancho de banda, ya que no se desperdicia espacio en
+		caracteres de formato o en la interpretación de texto legible por humanos.
+		Un protocolo basado en texto envía datos como cadenas legibles utilizando
+		caracteres como letras, números y símbolos.
+		
+		HTTP/1.0/1.1 es protocolo Textual(ASCII)
+		HTTP/2 es protocolo binario(Binary Framing)
+
+	20. Responder las siguientes preguntas:
+		
+		a. ¿Qué función cumple la cabecera Host en HTTP 1.1? ¿Existía en HTTP 1.0?
+		   ¿Qué sucede en HTTP/2? 
+		   (Ayuda: https://undertow.io/blog/2015/04/27/An-in-depth-overview-of-HTTP2.html para HTTP/2)
+		b. En HTTP/1.1, ¿es correcto el siguiente requerimiento?
+			
+			GET /index.php HTTP/1.1
+			User-Agent: curl/7.54.0
+
+		c. ¿Cómo quedaría en HTTP/2 el siguiente pedido realizado en HTTP/1.1 si se está usando https?
+		
+			GET /index.php HTTP/1.1
+			Host:http://www.info.unlp.edu.ar/
+			
+		a.	La linea de cabecera Host especifica el host en el que reside el objeto. 
+			Existia en 1.0.
+			HTTP/2:
+			authority: Similar a HTTP/1.1 Host: header, contiene una porcion de authority del URI.
+		
+		b. No, falta especificar el host.
+		
+		c.
+			:method: get
+			:path: /index.php
+			:scheme: https
+			:authority: www.info.unlp.edu.ar
+
+Ejercicio de Parcial
+
+	curl -X ?? www.redes.unlp.edu.ar/??
+	> HEAD /metodos/ HTTP/??
+	> Host: www.redes.unlp.edu.ar
+	> User-Agent: curl/7.54.0
+	< HTTP/?? 200 OK
+	< Server: nginx/1.4.6 (Ubuntu)
+	< Date: Wed, 31 Jan 2018 22:22:22 GMT
+	< Last-Modified: Sat, 20 Jan 2018 13:02:41 GMT
+	< Content-Type: text/html; charset=UTF-8
+	< Connection: close
+
+	a. ¿Qué versión de HTTP podría estar utilizando el servidor?
+	b. ¿Qué método está utilizando? Dicho método, ¿retorna el recurso completo solicitado?
+	c. ¿Cuál es el recurso solicitado?
+	d. ¿El método funcionó correctamente?
+	e. Si la solicitud hubiera llevado un encabezado que diga: 
+		If-Modified-Since: Sat, 20 Jan 2018 13:02:41 GMT
+
+	¿Cuál habría sido la respuesta del servidor web? ¿Qué habría hecho el
+	navegador en este caso?
+	
+	a.probablemente HTTP/1.1
+	b.Utiliza el metodo HEAD, el cual solo hace un requerimiento de los headers.
+	c.el recurso solicitado fue metodos/HTTP ??
+	d.el codigo de estado 200 OK indica que el metodo funciono con exito
+	e.Respuesta del servidor: Dado que la fecha proporcionada en el encabezado If-Modified-Since es
+	 				  	      exactamente la misma que la fecha de la última modificación del recurso (Last-
+	 				  	      Modified: Sat, 20 Jan 2018 13:02:41 GMT), el servidor probablemente habría
+	 				  	      respondido con un código de estado 304 Not Modified Esto indica que el recurso
+	 				  	      no ha sido modificado desde la fecha especificada, y por lo tanto, no se
+	 				  	      necesita enviar el recurso completo nuevamente.
+	
+	  Acción del navegador: En este caso, el navegador (o el cliente que realizó la solicitud) no recibiría el 
+	  cuerpo del recurso, ya que el servidor indica que no ha habido cambios. El navegador podría utilizar la 
+	  versión en caché del recurso, ya que no hay necesidad de descargarlo de nuevo.
+
+
+
+Esto es importante porque HTTP/1.0 y HTTP/1.1 tienen algunas diferencias en cuanto a funcionalidad y 
+comportamiento, como:
+
+    HTTP/1.1 requiere el encabezado Host, mientras que HTTP/1.0 no.
+    HTTP/1.1 admite conexiones persistentes por defecto, HTTP/1.0 no.
+    HTTP/1.1 tiene más códigos de estado disponibles que HTTP/1.0.

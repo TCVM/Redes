@@ -1,0 +1,1067 @@
+1. ¿Qué protocolos se utilizan para el envío de mails entre el cliente y su servidor de
+correo? ¿Y entre servidores de correo?
+
+	Protocolos SMTP y ESMTP.
+	Entre servidores se usa SMTP.
+	
+2. ¿Qué protocolos se utilizan para la recepción de mails? Enumere y explique
+características y diferencias entre las alternativas posibles.
+
+	POP3: Se inicia cuando se abre una conexion TCP en el puerto 110 al servidor de correo.
+		  Pasa por tres fases: Autorizacion, transaccion y actualizacion. Se usa junto al 
+		  MDA(Mail Delivery Agent)
+		  
+		  Durante la actualizacion el agente envia un nombre de usuario y una contraseña.
+		  
+		  Durante la transaccion el agente recupera los mensajes(en esta el agente puede 
+		  marcar los mensajes para borrado, eliminar las marcas de borrado y obtener
+		  estadisticas de correo). El agente de usuario ejecuta comandos y el servidor
+		  devuelve para cada uno una respuesta. Pueden ser: +OK(comando correcto) o 
+		  -ERR(comando erroneo). Dependediendo la configuracion del usuario, el POP3
+		  puede "Descargar y Borrar" o "Descargar y Guardar".
+		  Descargar y borrar usa los comandos: list,retr y dele.  
+		  
+		  La actualizacion se da luego de que el cliente haya ejecutado el comando *quit*,
+		  terminando la sesion de POP3, en este instante el servidor borra los mensajes
+		  marcados.  
+
+	IMAP4: es un protocolo de acceso a correo. Ofrece muchas mas funcionalidades que POP3 pero
+		   es mas complejo. Un servidor IMAP asocia cada mensaje con una carpeta; cuando un mensaje
+		   llega se asocia con la carpeta INBOX del destinatario, el cual puede pasar el mensaje a
+		   una nueva carpeta creada por el usuario, leer el mensaje, borralo, etc.
+		   Proporciona comandos que permiten a los usuarios crear carpetas y mover los mensajes de
+		   una carpeta a otra.
+		   Tambien proporciona comandos que permiten realizar busquedas en carpetas remotas para
+		   localizar mensajes que cumplan unos determinados criterios.
+		   Un sevidor IMAP mantiene informacion acerca del estado a lo largo de las sesiones, por
+		   ejemplo nombres de las carpetas y los mensajes asociados con cada una de ellas.
+		   Otra caracteristica es que posee comandos que permiten a un agente de usuario obtener
+		   partes componentes de los mensajes. Esto es util cuando el ancho de banda es pequeño
+
+	
+	
+		
+3. Utilizando la VM y teniendo en cuenta los siguientes datos, abra el cliente de correo
+  (Thunderbird) y configure dos cuentas de correo. Una de las cuentas utilizará POP para
+  solicitar al servidor los mails recibidos para la misma mientras que la otra utilizará IMAP.
+  Al crear cada una de las cuentas, seleccionar Manual config y luego de configurar las
+  mismas según lo indicado, ignorar advertencias por uso de conexión sin cifrado.
+
+	● Datos para POP
+		Cuenta de correo: alumnopop@redes.unlp.edu.ar
+		Nombre de usuario: alumnopop
+		Contraseña: alumnopoppass
+		Puerto: 110
+
+	● Datos para IMAP
+		Cuenta de correo: alumnoimap@redes.unlp.edu.ar
+		Nombre de usuario: alumnoimap
+		Contraseña: alumnoimappass
+		Puerto: 143
+
+	● Datos comunes para ambas cuentas
+		
+		Servidor de correo entrante (POP/IMAP):
+		
+		• Nombre: mail.redes.unlp.edu.ar
+		• SSL: None
+		• Autenticación: Normal password
+
+	Servidor de correo saliente (SMTP):
+
+		• Nombre: mail.redes.unlp.edu.ar
+		• Puerto: 25
+		• SSL: None
+		• Autenticación: Normal password
+
+	a. Verificar el correcto funcionamiento enviando un email desde el cliente de
+	   una cuenta a la otra y luego desde la otra responder el mail hacia la primera.
+
+	b. Análisis del protocolo SMTP
+
+		i. Utilizando Wireshark, capture el tráfico de red contra el servidor de
+		   correo mientras desde la cuenta alumnopop@redes.unlp.edu.ar envía
+		   un correo a alumnoimap@redes.unlp.edu.ar
+
+		ii. Utilice el filtro SMTP para observar los paquetes del protocolo SMTP
+			en la captura generada y analice el intercambio de dicho protocolo
+			entre el cliente y el servidor para observar los distintos comandos
+			utilizados y su correspondiente respuesta. Ayuda: filtre por protocolo
+			SMTP y sobre alguna de las líneas del intercambio haga click derecho
+			y seleccione Follow TCP Stream. . .
+
+	c. Usando el cliente de correo Thunderbird del usuario alumnopop@redes.unlp.edu.ar envíe un correo 				   electrónico alumnoimap@redes.unlp.edu.ar el cual debe tener: un asunto, datos en el body y una imagen 		   adjunta.
+
+		i. Verifique las fuentes del correo recibido para entender cómo se utiliza el header “Content-Type: 			   multipart/mixed“ para poder realizar el envío de distintos archivos adjuntos.
+
+				Las notas MIME (Multipurpose Internet Mail Extensions) permiten
+				enviar correos electrónicos con contenido diverso, como texto,
+				imágenes y archivos adjuntos.
+				
+				Cuando un correo electrónico tiene el encabezado "Content-Type:
+				multipart/mixed", significa que el mensaje consta de múltiples
+				partes, algunas de las cuales pueden ser archivos adjuntos.
+				
+				Para separar y marcar cada parte dentro de un mensaje MIME, se
+				utiliza un identificador de límite llamado "boundary", que se
+				establece en el encabezado "Content-Type".
+				
+				Cada parte del mensaje se delimita con "--boundary", y el
+				"boundary" actúa como un marcador para indicar dónde comienza y
+				termina cada parte.
+				
+				Debajo de cada divisor se encuentra de nuevo el encabezado
+				Content-Type y otro llamado Content-Transfer-Encoding. Estos
+				indican el tipo del contenido y el algoritmo usado para codificarlo y
+				decodificarlo.
+				
+				En este caso aparecen dos. El texto y la imagen.
+				
+				(agradescamosle a agus la explicacion de las fuentes, pase todo el dia atascado porque
+				 no te especifican como enviar correctamente la imagen, no quiero saber mas nada de este
+				 punto)
+		
+		ii. Extraiga la imagen adjunta del mismo modo que lo hace el cliente de correo a partir de los fuentes			    del mensaje.
+
+
+			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
+			oIiICIiAiIgIiIP/2Q==
+			
+			(honestamente no se que esperan que haga en este punto, supongo que usar un comando base 64
+			para que lea un archivo con este texto y lo genere pero la verdad me da muchisima paja)
+		
+		4. Análisis del protocolo POP
+			
+			a. Utilizando Wireshark, capture el tráfico de red contra el servidor de correo
+			mientras desde la cuenta alumnoimap@redes.unlp.edu.ar le envía una
+			correo a alumnopop@redes.unlp.edu.ar y mientras
+			alumnopop@redes.unlp.edu.ar recepciona dicho correo.
+			
+			b. Utilice el filtro POP para observar los paquetes del protocolo POP en la
+			captura generada y analice el intercambio de dicho protocolo entre el cliente
+			y el servidor para observar los distintos comandos utilizados y su
+			correspondiente respuesta.
+
+			a.  Envio IMAP
+				
+				220 mail.redes.unlp.edu.ar ESMTP Postfix (Lihuen-4.01/GNU)
+				EHLO [172.28.0.1]
+				250-mail.redes.unlp.edu.ar
+				250-PIPELINING
+				250-SIZE 10240000
+				250-VRFY
+				250-ETRN
+				250-STARTTLS
+				250-ENHANCEDSTATUSCODES
+				250-8BITMIME
+				250-DSN
+				250 CHUNKING
+				MAIL FROM:<alumnoimap@redes.unlp.edu.ar> BODY=8BITMIME SIZE=462
+				250 2.1.0 Ok
+				RCPT TO:<alumnopop@redes.unlp.edu.ar>
+				250 2.1.5 Ok
+				DATA
+				354 End data with <CR><LF>.<CR><LF>
+				Message-ID: <a35fc9d8-d65e-fcbf-2272-fc3d9376d5f1@redes.unlp.edu.ar>
+				Date: Sun, 29 Sep 2024 14:42:21 -0300
+				MIME-Version: 1.0
+				User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ 				Thunderbird/91.12.0
+				Content-Language: en-US
+				To: alumno de redes <alumnopop@redes.unlp.edu.ar>
+				From: alumnoimap <alumnoimap@redes.unlp.edu.ar>
+				Subject: la cague
+				Content-Type: text/plain; charset=UTF-8; format=flowed
+				Content-Transfer-Encoding: 7bit
+				
+				welp
+				
+				.
+				250 2.0.0 Ok: queued as 561866014D
+				QUIT
+				221 2.0.0 Bye
+				
+			
+			b.  Recepcion POP
+			
+				+OK Dovecot ready.
+				CAPA
+				+OK
+				CAPA
+				TOP
+				UIDL
+				RESP-CODES
+				PIPELINING
+				AUTH-RESP-CODE
+				STLS
+				USER
+				SASL PLAIN
+				.
+				AUTH PLAIN
+				+ 
+				AGFsdW1ub3BvcEByZWRlcy51bmxwLmVkdS5hcgBhbHVtbm9wb3BwYXNz
+				+OK Logged in.
+				STAT
+				+OK 5 4520
+				LIST
+				+OK 5 messages:
+				1 987
+				2 987
+				3 977
+				4 785
+				5 784
+				.
+				UIDL
+				+OK
+				1 0000000356eaa394
+				2 0000000456eaa394
+				3 0000000556eaa394
+				4 0000000656eaa394
+				5 0000000756eaa394
+				.
+				QUIT
+				+OK Logging out.
+				
+				
+				Comandos:
+				
+					CAPA
+						Capa de seguridad como TLS/SSL entre POP3 y el servidor
+						
+					AUTH PLAIN
+						POP3 envia de forma codificada en base64 el nombre de ususario y contraseña
+						para autenticar en el servidor.
+						
+					STAT
+						Devuelve estadisticas del buzon del usuario, incluye numero de mensajes y
+						el tamaño total en octetos.
+						
+					LIST
+						Devuelve una lista de los mensajes que se encuentran en el buzon del usuario
+						junto con sus tamaños. Se puede usar para conseguir informacion especificacia
+						de un mensaje puntual dado su numero.
+						
+					UIDL
+						Devuelve una lista de los identificadores unicos de los mensajes del buzon
+						
+					RETR
+						Devuelve un mensaje especifico del buzon dado un numero. Permite recuperar
+						el contenido completo del mensaje.
+						
+					QUIT
+						Finaliza la sesion de POP3. Cierra conexion y desconecta el cliente.
+
+
+			5. Análisis del protocolo IMAP
+			
+				a.  Utilizando Wireshark, capture el tráfico de red contra el servidor de correo
+					mientras desde la cuenta alumnopop@redes.unlp.edu.ar le envía un correo a
+					alumnoimap@redes.unlp.edu.ar y mientras alumnoimap@redes.unlp.edu.ar
+					recepciona dicho correo.
+			
+				b.  Utilice el filtro IMAP para observar los paquetes del protocolo IMAP en la
+					captura generada y analice el intercambio de dicho protocolo entre el cliente
+					y el servidor para observar los distintos comandos utilizados y su
+					correspondiente respuesta.
+				
+				a.  Envio IMAP
+				
+					220 mail.redes.unlp.edu.ar ESMTP Postfix (Lihuen-4.01/GNU)
+					EHLO [172.28.0.1]
+					250-mail.redes.unlp.edu.ar
+					250-PIPELINING
+					250-SIZE 10240000
+					250-VRFY
+					250-ETRN
+					250-STARTTLS
+					250-ENHANCEDSTATUSCODES
+					250-8BITMIME
+					250-DSN
+					250 CHUNKING
+					MAIL FROM:<alumnopop@redes.unlp.edu.ar> BODY=8BITMIME SIZE=441
+					250 2.1.0 Ok
+					RCPT TO:<alumnoimap@redes.unlp.edu.ar>
+					250 2.1.5 Ok
+					DATA
+					354 End data with <CR><LF>.<CR><LF>
+					Message-ID: <09ac5e56-ce14-1197-35cd-81bf4bb4928d@redes.unlp.edu.ar>
+					Date: Sun, 29 Sep 2024 18:36:58 -0300
+					MIME-Version: 1.0
+					User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ 					Thunderbird/91.12.0
+					Content-Language: en-US
+					To: alumnoimap@redes.unlp.edu.ar
+					From: alumnopop <alumnopop@redes.unlp.edu.ar>
+					Subject: dsaasd
+					Content-Type: text/plain; charset=UTF-8; format=flowed
+					Content-Transfer-Encoding: 7bit
+					
+					asda
+					
+					.
+					250 2.0.0 Ok: queued as EFE1B600ED
+					QUIT
+					221 2.0.0 Bye
+					
+					
+					
+					Recepcion POP3
+					* 19 EXISTS
+					* 1 RECENT
+					DONE
+					628 OK Idle completed (99.678 + 99.653 + 99.677 secs).
+					629 noop
+					629 OK NOOP completed (0.001 + 0.000 secs).
+					630 UID fetch 21:* (FLAGS)
+					* 19 FETCH (UID 21 FLAGS (\Recent))
+					630 OK Fetch completed (0.001 + 0.000 secs).
+					631 UID fetch 21 (UID RFC822.SIZE FLAGS BODY.PEEK[HEADER.FIELDS (From To Cc Bcc Subject 						Date Message-ID Priority X-Priority References Newsgroups In-Reply-To Content-Type Reply-						To)])
+					* 19 FETCH (UID 21 RFC822.SIZE 765 FLAGS (\Recent) BODY[HEADER.FIELDS (FROM TO CC BCC 							SUBJECT DATE MESSAGE-ID PRIORITY X-PRIORITY REFERENCES NEWSGROUPS IN-REPLY-TO CONTENT-TYPE 					REPLY-TO)] {265}
+					Message-ID: <09ac5e56-ce14-1197-35cd-81bf4bb4928d@redes.unlp.edu.ar>
+					Date: Sun, 29 Sep 2024 18:36:58 -0300
+					To: alumnoimap@redes.unlp.edu.ar
+					From: alumnopop <alumnopop@redes.unlp.edu.ar>
+					Subject: dsaasd
+					Content-Type: text/plain; charset=UTF-8; format=flowed
+					
+					)
+					631 OK Fetch completed (0.004 + 0.000 + 0.003 secs).
+					632 UID fetch 21 (UID RFC822.SIZE BODY.PEEK[])
+					* 19 FETCH (UID 21 RFC822.SIZE 765 BODY[] {765}
+					Return-Path: <alumnopop@redes.unlp.edu.ar>
+					X-Original-To: alumnoimap@redes.unlp.edu.ar
+					Delivered-To: alumnoimap@redes.unlp.edu.ar
+					Received: from [172.28.0.1] (unknown [172.28.0.1])
+						by mail.redes.unlp.edu.ar (Postfix) with ESMTP id EFE1B600ED
+						for <alumnoimap@redes.unlp.edu.ar>; Sun, 29 Sep 2024 21:37:03 +0000 (UTC)
+					Message-ID: <09ac5e56-ce14-1197-35cd-81bf4bb4928d@redes.unlp.edu.ar>
+					Date: Sun, 29 Sep 2024 18:36:58 -0300
+					MIME-Version: 1.0
+					User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ 					Thunderbird/91.12.0
+					Content-Language: en-US
+					To: alumnoimap@redes.unlp.edu.ar
+					From: alumnopop <alumnopop@redes.unlp.edu.ar>
+					Subject: dsaasd
+					Content-Type: text/plain; charset=UTF-8; format=flowed
+					Content-Transfer-Encoding: 7bit
+					
+					asda
+					
+					)
+					632 OK Fetch completed (0.001 + 0.000 secs).
+					633 UID fetch 21 (UID BODY.PEEK[HEADER.FIELDS (Content-Type Content-Transfer-Encoding)] 						BODY.PEEK[TEXT]<0.2048>)
+					* 19 FETCH (UID 21 BODY[HEADER.FIELDS (CONTENT-TYPE CONTENT-TRANSFER-ENCODING)] {91}
+					Content-Type: text/plain; charset=UTF-8; format=flowed
+					Content-Transfer-Encoding: 7bit
+					
+ 					BODY[TEXT]<0> {8}
+					asda
+					
+					)
+					633 OK Fetch completed (0.002 + 0.000 + 0.001 secs).
+					634 IDLE
+					+ idling
+					DONE
+					634 OK Idle completed (4.048 + 4.047 + 4.047 secs).
+					635 noop
+					635 OK NOOP completed (0.001 + 0.000 secs).
+					636 UID fetch 22:* (FLAGS)
+					* 19 FETCH (UID 21 FLAGS (\Recent))
+					636 OK Fetch completed (0.001 + 0.000 secs).
+					637 IDLE
+					+ idling
+					* OK Still here
+					DONE
+					637 OK Idle completed (16.006 + 16.005 + 16.005 secs).
+					638 noop
+					638 OK NOOP completed (0.001 + 0.000 secs).
+					639 UID fetch 22:* (FLAGS)
+					* 19 FETCH (UID 21 FLAGS (\Recent))
+					639 OK Fetch completed (0.001 + 0.000 secs).
+					640 IDLE
+					+ idling
+					DONE
+					640 OK Idle completed (59.209 + 59.208 + 59.208 secs).
+					641 noop
+					641 OK NOOP completed (0.001 + 0.000 secs).
+					642 UID fetch 22:* (FLAGS)
+					* 19 FETCH (UID 21 FLAGS (\Recent))
+					642 OK Fetch completed (0.001 + 0.000 secs).
+					643 IDLE
+					+ idling
+					* OK Still here
+					DONE
+					643 OK Idle completed (60.065 + 60.064 + 60.064 secs).
+					644 noop
+					644 OK NOOP completed (0.001 + 0.000 secs).
+					645 UID fetch 22:* (FLAGS)
+					* 19 FETCH (UID 21 FLAGS (\Recent))
+					645 OK Fetch completed (0.001 + 0.000 secs).
+					646 IDLE
+					+ idling
+					
+					comandos
+						
+						DONE
+							Indica que se ha completado una transaccion abierta en el servidor IMAP.
+							
+						CHECK
+							Verifica la integridad de una carpeta IMAP y se asegura que todos los
+							cambios se aplicaron correctamente.
+							
+						UID FETCH
+							Devuelve informacion de un correo especifico de una carpeta IMAP a partir
+							de un identificador unico(UID)
+							
+						UID FETCH 5
+							Devuelve los mensajes con identificador desde el 5 en adelante.
+							
+						UID FETCH 5 (UID RFC822.SIZE FLAGS BODY.PEEK[HEADER.FIELDS...):
+							Devuelve informacion sobre el mensaje con UID 5, incluyendo su
+							tamaño, banderas y encabezado.
+							
+						UID FETCH 5 (UID RFC822.SIZE BODY.PEEK[]): 
+							El cliente solicita el cuerpo completo del mensaje con UID 5.
+							
+						UID FETCH 5 (UID BODY.PEEK[HEADER.FIELDS...): 
+							El cliente solicita información específica del encabezado del mensaje con UID 5.
+							
+						IDLE
+							Permite mantener la conexion abierta con el servidor esperando notificaciones de
+							nuevos mensajes. Facilita comunicacion en tiempo real.
+							
+						NOOP(No Operation)
+							 Mantiene la conexion abierta con el servidor sin realizar cambios en las carpetas
+							 o los mensajes.
+							 
+			
+			6. IMAP vs POP
+				
+				a.  Marque como leídos todos los correos que tenga en el buzón de entrada de
+					alumnopop y de alumnoimap. Luego, cree una carpeta llamada POP en la
+					cuenta de alumnopop y una llamada IMAP en la cuenta de alumnoimap.
+					Asegúrese que tiene mails en el inbox y en la carpeta recientemente creada
+					en cada una de las cuentas.
+					
+				b.  Cierre la sesión de la máquina virtual del usuario redes e ingrese
+					nuevamente identificándose como usuario root y password packer, ejecute el
+					cliente de correos. De esta forma, iniciará el cliente de correo con el perfil del
+					superusuario (diferente del usuario con el que ya configuró las cuentas antes
+					mencionadas). Luego configure las cuentas POP e IMAP de los usuarios
+					alumnopop y alumnoimap como se describió anteriormente pero desde el
+					cliente de correos ejecutado con el usuario root. Responda:
+					
+					i. ¿Qué correos ve en el buzón de entrada de ambas cuentas? ¿Están
+						marcados como leídos o como no leídos? ¿Por qué?
+					
+					ii. ¿Qué pasó con las carpetas POP e IMAP que creó en el paso
+						anterior?
+					
+				c. En base a lo observado. ¿Qué protocolo le parece mejor? ¿POP o IMAP?¿Por qué? ¿Qué 							   protocolo considera que utiliza más recursos del servidor?¿Por qué?
+					   
+					
+					b.i. En la inbox de alumnopop estan todos los mensajes sin leer.
+					
+						  en POP3 los correos electrónicos se descargan del servidor al
+						  cliente y se marcan como no leídos en el cliente, mientras que
+						  en el protocolo IMAP, los correos se almacenan en el servidor y
+						  se reflejan en el cliente. Los correos enviados se consideran
+						  leídos porque ya se enviaron desde el cliente. IMAP sincroniza
+						  el estado de los correos electrónicos entre el cliente y el
+						  servidor.
+												
+					  ii.La carpeta de alumnoimap se mantuvo, la de alumnopop no.
+					  
+					  	  POP3 no admite la sincronización de carpetas en el servidor
+						  (están localmente), mientras que IMAP permite acceder y
+						  sincronizar todas las carpetas en el servidor.
+						  
+					c.El IMAP es mucho mejor en lo que administracion de mensajes se refiere, permite
+					  organizar mensajes en carpetas y el cliente al estar sincronizado con el servidor
+					  mantiene actualizado el estado de los mensajes y las carpetas creadas.
+					  Tambien es que mas recursos necesita del servidor por estar en conexion persistente.
+					  
+					    Considero que es mejor IMAP ya que es más completo y adecuado si
+						se quiere una experiencia de correo electrónico más sincronizada entre
+						múltiples dispositivos (lo que la mayoría desea) y se necesita acceder a
+						carpetas en el servidor. Permite trabajar desde varios dispositivos y
+						mantener una estructura de carpetas consistente.
+						En cuanto a los recursos del servidor, IMAP generalmente requiere más
+						recursos debido a su capacidad de mantener el estado de los correos
+						electrónicos y la estructura de carpetas en el servidor. Sin embargo, la
+						mayoría de los servidores de correo modernos están diseñados para
+						gestionar eficientemente esta carga de trabajo adicional.
+					  
+					  
+			7. ¿En algún caso es posible enviar más de un correo durante una misma
+				conexión tcp?
+				Considere:
+				
+				Destinatarios múltiples del mismo dominio entre MUA-MSA y entre MTA-MTA
+				Destinatarios múltiples de diferentes dominios entre MUA-MSA y entre MTA MTA
+				
+				/*
+				  MUA-Mail User Agent
+				  MSA-Mail Submission Agent
+				  MTA-Mail Transport Agent
+				  MAA-Mail Access Agent
+				*/
+				(respuesta de agus, la copie sin querer)
+				
+				(MUA envia el mensaje a MSA, este lo preprocesa y lo envia a MTA. MTA conecta con otro MTA y 					 envia el mensaje. Este lo re-envia al MDA el cual lo deja en la Mailbox del usuario. Luego el
+				 mail y MDA sus credenciales son autenticados por el MAA para finalmente transportar o 							 permitir el acceso del mail al MUA destinatario.)
+				
+				En ambos casos, entre MUA-MSA si es posible enviar mas de un correo
+				durante una misma conexión TCP. Entre MTA-MTA si se trata de destinatarios
+				del mismo dominio se puede enviar en una misma conexión (aunque también
+				podría haber conexiones distintas, verdaderamente depende si el MTA lo
+				permite o como esta configurado). Si se trata de destinatarios de distintos
+				dominios, siempre va a haber distintas conexiones, porque son dominios
+				separados y responden a distintos servidores.
+			
+			8. Indique sí es posible que el MSA escuche en un puerto TCP diferente a los
+			   convencionales y qué implicancias tendría.
+			   
+			   Si es posible, pero todos los MUA del dominio deberian ser configurados para usar su puerto MSA
+			   
+			9. Indique sí es posible que el MTA escuche en un puerto TCP diferente a los
+			   convencionales y qué implicancias tendría.
+			   
+			   (una vez mas, copie sin querer la respuesta de agus. Lo digo enserio)
+			   Sí, es posible configurar un MTA para que escuche en un puerto TCP diferente
+			   al convencional. Sin embargo, hay que tener en cuenta que si se cambia el
+			   MTA se tendría que informar a todos los MTA de los otros dominios de dicho
+			   cambio, que a diferencia del cambio de puerto del MSA, es algo prácticamente
+			   imposible. 
+			   
+			   
+			10. Ejercicio integrador HTTP, DNS y MAIL (copie y pegue sin quere hasta el e, lo siento)
+				
+				Suponga que registró bajo su propiedad el dominio redes2022.com.ar y
+				dispone de 4 servidores:
+				
+				▪ Un servidor DNS instalado configurado como primario de la zona
+				redes2022.com.ar. (hostname: ns1 / ip: 203.0.113.65).
+				▪ Un servidor DNS instalado configurado como secundario de la
+				zona redes2022.com.ar. (hostname: ns2 / ip: 203.0.113.66).
+				▪ Un servidor de correo electrónico (hostname: mail / ip:
+				203.0.113.111). Permitirá a los usuarios envíar y recibir correos a
+				cualquier dominio de Internet.
+				▪ Un servidor WEB para el acceso a un webmail (hostname: correo /
+				ip: 203.0.113.8). Permitirá a los usuarios gestionar vía web sus
+				correos electrónicos a través de la URL
+				https://webmail.redes2022.com.ar
+				
+				a) ¿Qué información debería informar al momento del registro para hacer
+					visible a Internet el dominio registrado? (gracias agus)
+					
+					Debería informarle al servidor autoritativo de .com.ar:
+					
+					• El NS de los servidores autoritativos del dominio redes2022.com.ar
+					  (ns1 y ns2)
+					• El A de ambos servidores autoritativos.
+					
+					(a que se refiere con "informar"? estoy informando yo manualmente o durante el registro **
+					 el informe se hace automaticamente?)
+				
+				b) ¿Qué registros sería necesario configurar en el servidor de nombres?
+					
+					Indique toda la información necesaria del archivo de zona. Puede
+					utilizar la siguiente tabla de referencia (evalúe la necesidad de usar
+					cada caso los siguientes campos): Nombre del registro, Tipo de
+					registro, Prioridad, TTL, Valor del registro. (gracias agus)
+					
+					Sería necesario configurar en el NS los siguientes registros:
+				
+						• redes2022.com.ar 86400 IN NS ns1.redes2022.com.ar
+						• redes2022.com.ar 86400 IN NS ns2.redes2022.com.ar
+						• redes2022.com.ar 86400 IN MX 5 mail.redes2022.com.ar
+						• ns1.redes2022.com.ar 86400 IN A 203.0.113.65
+						• ns2.redes2022.com.ar 86400 IN A 203.0.113.66
+						• mail.redes2022.com.ar 86400 IN A 203.0.113.111
+						• correo.redes2022.com.ar 86400 IN A 203.0.113.8
+						• webmail.redes2022.com.ar 86400 IN CNAME correo.redes2022.com.ar
+						• redes2022.com.ar 86400 IN SOA ns1.redes2022.com.ar
+						  root.redes2022.com.ar 2023091300 604800 86400 2419200 86400
+				
+				c) ¿Es necesario que el servidor de DNS acepte consultas recursivas?
+					Justifique. (gracias agus)
+					
+					No es necesario, porque al ser autoritativo para el dominio
+					redes2022.com.ar no necesitaría resolver la petición
+					consultando a otros servidores. No hay necesidad alguna de que haga		****
+					recursión porque es el dueño de los dominios por los que se esta
+					consultando. No debe delegar nada.(???)
+				
+				d) ¿Qué servicios/protocolos de capa de aplicación configuraría en cada
+					servidor? (mio)
+				
+					En los servidores DNS configuraría el protocolo DNS, en el servidor de
+					correo configuraría el SMTP e IMAP y en el servidor web el HTTPS.
+				
+				e) Para cada servidor, ¿qué puertos considera necesarios dejar abiertos
+					a Internet?. A modo de referencia, para cada puerto indique: servidor,
+					protocolo de transporte y número de puerto. (gracias agus)
+				
+					ns1/ns2 – UDP o TCP (en caso de que la respuesta exceda 512 bytes (y/o por zona de	*****
+					transferencia, no?)) – 53
+					correo – TCP – 80 (http) o 443 (https) (SMTP era 25)
+				
+				f. ¿Cómo cree que se conectaría el webmail del servidor web con el servidor de
+					correo? ¿Qué protocolos usaría y para qué? (mio)
+					
+					Siendo la webmail un MUA se conecta con el MSA y este usa el protocolo SMTP para enviar							mail al servidor de correo MTA, el cual luego interactua con otro servidores de correo a 						travez de este mismo protocolo. Luego la recepcion del destinatario seria a travez de
+					los protocolos POP3 o IMAP(el MAA autenticando el mail durante el proceso).
+					El cliente accede a la web mail usando el protocolo HTTP 
+				
+				g. ¿Cómo se podría hacer para que cualquier MTA reconozca como válidos los
+					mails provenientes del dominio redes2024.com.ar solamente a los que llegan
+					de la dirección 203.0.113.111? ¿Afectaría esto a los mails enviados desde el
+					Webmail? Justifique. (gracias agus)
+					
+					El registro SPF (Sender Policy Framework) es un componente esencial en la 
+					configuración de un servidor DNS que ayuda a autenticar el envío de correos
+					electrónicos. Su principal función es prevenir la suplantación de identidad
+					en el correo electrónico, permitiendo a los servidores receptores verificar
+					si un mensaje proviene de una dirección IP autorizada para enviar correos en
+					nombre de un dominio específico.
+				
+					Se debería configurar en el registro SPF del servidor DNS con el dominio
+					redes2022.com.ar y la dirección 203.0.113.111. No, esto no afectaría a los
+					mails enviados desde la webmail, ya que esta estaría enviando los mails al
+					MSA y el MSA recibe del MUA y se los pasa al MTA (con ip 203.0.113.111).
+					Este MTA se lo pasara a cualquier otro MTA que reconocera como valido el
+					mail proveniente de este (ya que tiene la ip que se encuentra en el SPF)
+										
+				h. ¿Qué característica propia de SMTP, IMAP y POP hace que al adjuntar una
+					imagen o un ejecutable sea necesario aplicar un encoding (ej. base64)? (mio)
+				
+					Porque utilizan como formato ASCII 7 bits en 8 NVT, el cual es texto plano y
+					caracteres ASCII
+				
+				i. ¿Se podría enviar un mail a un usuario de modo que el receptor vea que el
+					remitente es un usuario distinto? En caso afirmativo, ¿Cómo? ¿Es una
+					indicación de una estafa? Justifique (gracias agus)
+				
+					Si, se podría cambiando el encabezado “From”, ya que los protocolos de
+					correo electrónico, como SMTP, no tienen un mecanismo integrado para
+					verificar si la dirección del remitente es realmente quien dice ser.
+					En la actualidad existen certificados digitales que ayudan a mitigar la
+					suplantación de identidad en el correo electrónico y en otras
+					comunicaciones en línea
+				
+				j. ¿Se podría enviar un mail a un usuario de modo que el receptor vea que el
+					destinatario es un usuario distinto? En caso afirmativo, ¿Cómo? ¿Por qué no
+					le llegaría al destinatario que el receptor ve? ¿Es esto una indicación de una
+					estafa? Justifique (gracias agus)
+					
+					No es posible enviar un correo electrónico de modo que el receptor vea que
+					el destinatario es un usuario distinto. En los protocolos de correo
+					electrónico como SMTP el encabezado "To" para indicar quién es el
+					destinatario real del mensaje, y esta información no puede ser falsificada en
+					el nivel del remitente de manera que el receptor vea otro destinatario.
+					El encabezado “To” no se puede modificar
+					
+				k. ¿Qué protocolo usará nuestro MUA para enviar un correo con remitente
+					redes@info.unlp.edu.ar? ¿Con quién se conectará? ¿Qué información será
+					necesaria y cómo la obtendría? (gracias agus.Mixto)
+
+					El MUA usara el protocolo SMTP para conectar con el MSA para enviar el mail.
+					El MUA debe conocer el puerto SMTP que se utilizará para la comunicación con el MSA.
+					El puerto estándar para la comunicación con el MSA en la mayoría de los casos es el
+				 	puerto 587 (SMTP Submission), pero también se podría usar el puerto 25
+					(SMTP) si está configurado de esa manera (u otro si no es ninguno de esos). Además
+					necesita la dirección IP del servidor de correo saliente, para ello debe hacer una
+					consulta DNS por el registro A del servidor de correo saliente de info.unlp.edu.ar
+				
+				l. Dado que solo disponemos de un servidor de correo, ¿qué sucederá con los
+				   mails que intenten ingresar durante un reinicio del servidor? (gracias agus)
+
+					El servidor de correo local los encolara hasta que puedan ser enviados. 
+					(Pero no tienen en donde encolarse porque el server esta en reinicio. Como?)	******
+			
+				m. Suponga que contratamos un servidor de correo electrónico en la nube para
+				   integrarlo con nuestra arquitectura de servicios. (gracias agus)
+				   
+
+					i. ¿Cómo configuraría el DNS para que ambos servidores de correo se
+						comporten de manera de dar un servicio de correo tolerante a fallos?
+						
+						Debería agregar otro registro MX y A de tal manera que quede:
+						
+						redes2022.com.ar 86400 IN MX 10 nube.redes2022.com.ar
+						nube.redes2022.com.ar 86400 IN A IP
+						
+						Si se cae el servidor de correo con mayor prioridad (5) se enviarán a
+						este servidor en la nube.
+			
+			
+			11. Utilizando la herramienta Swaks envíe un correo electrónico con las siguientes
+				características:
+				
+				● Dirección destino: Dirección de correo de alumnoimap@redes.unlp.edu.ar
+				● Dirección origen: redesycomunicaciones@redes.unlp.edu.ar
+				● Asunto: SMTP-Práctica4
+				● Archivo adjunto: PDF del enunciado de la práctica
+				● Cuerpo del mensaje: Esto es una prueba del protocolo SMTP
+				
+				a. Analice tanto la salida del comando swaks como los fuentes del mensaje
+				recibido para responder las siguientes preguntas
+
+						220 mail.redes.unlp.edu.ar ESMTP Postfix (Lihuen-4.01/GNU)
+						EHLO debian
+						250-mail.redes.unlp.edu.ar
+						250-PIPELINING
+						250-SIZE 10240000
+						250-VRFY
+						250-ETRN
+						250-STARTTLS
+						250-ENHANCEDSTATUSCODES
+						250-8BITMIME
+						250-DSN
+						250 CHUNKING
+						MAIL FROM:<redesycomunicaciones@redes.unlp.edu.ar>
+						250 2.1.0 Ok
+						RCPT TO:<alumnoimap@redes.unlp.edu.ar>
+						250 2.1.5 Ok
+						DATA
+						354 End data with <CR><LF>.<CR><LF>
+						Date: Mon, 30 Sep 2024 10:09:18 -0300
+						To: alumnoimap@redes.unlp.edu.ar
+						From: redesycomunicaciones@redes.unlp.edu.ar
+						Subject: SMTP-Practica4
+						Message-Id: <20240930100918.004455@debian>
+						X-Mailer: swaks v20201014.0 jetmore.org/john/code/swaks/
+						MIME-Version: 1.0
+						Content-Type: multipart/mixed; boundary="----=_MIME_BOUNDARY_000_4455"
+						
+						------=_MIME_BOUNDARY_000_4455
+						Content-Type: text/plain
+						
+						Prueba
+						------=_MIME_BOUNDARY_000_4455
+						Content-Type: application/octet-stream; name="P4.pdf"
+						Content-Description: P4.pdf
+						Content-Disposition: attachment; filename="P4.pdf"
+						Content-Transfer-Encoding: BASE64		
+					
+					i. ¿A qué corresponde la información enviada por el servidor destino
+						como respuesta al comando EHLO? Elija dos de las opciones del
+						listado e investigue la funcionalidad de la misma.
+						
+						La información enviada por el servidor destino como
+						respuesta al comando EHLO corresponde a las
+						capacidades y extensiones soportadas por el servidor de
+						correo.
+						STARTTLS: Esta extensión indica que el servidor de correo
+						es compatible con la encriptación TLS
+						CHUNKING: Esta extensión indica que el servidor de
+						correo permite la transmisión eficiente y segura de correos
+						electrónicos en fragmentos más pequeños		
+					
+						(Por que nada mas estos dos?)											******
+					
+					ii. Indicar cuáles cabeceras fueron agregadas por la herramienta swaks.
+					
+						Date: Mon, 30 Sep 2024 10:09:18 -0300
+						To: alumnoimap@redes.unlp.edu.ar
+						From: redesycomunicaciones@redes.unlp.edu.ar
+						Subject: SMTP-Practica4
+						Message-Id: <20240930100918.004455@debian>
+						X-Mailer: swaks v20201014.0 jetmore.org/john/code/swaks/
+						MIME-Version: 1.0
+						Content-Type: multipart/mixed; boundary="----=_MIME_BOUNDARY_000_4455"
+						
+						------=_MIME_BOUNDARY_000_4455
+				
+					iii. ¿Cuál es el message-id del correo enviado? ¿Quién asigna dicho
+						  valor?
+						  
+						  <20240930100918.004455@debian> El MUA, en caso de que falte el MSA
+				
+					iv. ¿Cuál es el software utilizado como servidor de correo electrónico?
+					
+						Postfix es el servidor de correo electrónico que está siendo
+						utilizado en la dirección "mail.redes.unlp.edu.ar" con la
+						versión "Lihuen-4.01/GNU".
+				
+					v. Adjunte la salida del comando swaks y los fuentes del correo					*******
+					   electrónico.
+						
+						????
+						
+				b. Descargue de la plataforma la captura de tráfico smtp.pcap y la salida del
+				   comando swaks smtp.swaks para responder y justificar los siguientes
+				   ejercicios.
+				
+					i. ¿Por qué el contenido del mail no puede ser leído en la captura de
+						tráfico?
+						
+						Porque fue encriptado usando el comando STARTTLS
+				
+				c. Realice una consulta de DNS por registros TXT al dominio info.unlp.edu.ar y
+				   entre dichos registros evalúe la información del registro SPF. ¿Por qué cree
+				   que aparecen muchos servidores autorizados?
+				   
+				    ; <<>> DiG 9.16.27-Debian <<>> -t txt info.unlp.edu.ar
+					;; global options: +cmd
+					;; Got answer:
+					;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 29287
+					;; flags: qr rd ra; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: 1
+					
+					;; OPT PSEUDOSECTION:
+					; EDNS: version: 0, flags:; udp: 1232
+					; COOKIE: 760d913f7a4fe7060100000066fad619eed195acbc522352 (good)
+					;; QUESTION SECTION:
+					;info.unlp.edu.ar.		IN	TXT
+					
+					;; ANSWER SECTION:
+					info.unlp.edu.ar.	300	IN	TXT	"google-site- 																	verification=S5DXBH0Y_JiAEZ0VYUsukCNH35qBwL7KV1jwzZawRsE"
+					
+					info.unlp.edu.ar.	300	IN	TXT	"google-site-																	verification=_KuE_Fg0H37zv4e7OVJVyl_qGpamol5t_pMisXadMRU"
+					
+					info.unlp.edu.ar.	300	IN	TXT	"v=spf1 mx a:smtp.info.unlp.edu.ar 												a:mailsecure.info.unlp.edu.ar a:mail3.info.unlp.edu.ar a:listas.extension.info.unlp.edu.ar 					a:mail-app.info.unlp.edu.ar a:biblioteca.info.unlp.edu.ar a:catedras.info.unlp.edu.ar 							a:moodle.linti.unlp.edu.ar ~all"
+					
+					info.unlp.edu.ar.	300	IN	TXT	"google-site-verification=GQLud3qGeuqjRPOn-2INvgU0D-							dkJUjvGrXICDqACgQ"
+					info.unlp.edu.ar.	300	IN	TXT	"MS=ms66506008"
+					
+					;; Query time: 16 msec
+					;; SERVER: 172.28.0.29#53(172.28.0.29)
+					;; WHEN: Mon Sep 30 13:47:21 -03 2024
+					;; MSG SIZE  rcvd: 597
+					
+					
+					El registro SPF determina qué servidores de correo y dominios tienen
+					permitido enviar correo en nombre de un dominio. Aparecen muchos
+					servidores autorizados porque son los distintos servidores y dominios
+					de la facultad de informática.
+				   	
+				   	Se utiliza "a:" para autorizar servidores por nombres de host, debes
+					asegurarte de que estos nombres de host se resuelvan a direcciones IP
+					correctas y actualizadas.	
+					
+					(Gracias agus)
+					
+			d. Realice una consulta de DNS por registros TXT al dominio outlook.com y
+			   analice el registro correspondiente a SPF. ¿Cuáles son los bloques de red
+			   autorizados para enviar mails?. Investigue para qué se utiliza la directiva
+			   "~all"
+			
+			   
+					"v=spf1 include:spf-a.outlook.com include:spf-b.outlook.com ip4:157.55.9.128/25 								 include:spf.protection.outlook.com include:spf-a.hotmail.com include:_spf-ssg-									 b.microsoft.com include:_spf-ssg-c.microsoft.com ~all"
+			
+					 "include" permiten especificar dominios o registros SPF externos que
+					deben ser considerados como parte de la política SPF actual. Esto
+					significa que los servidores autorizados para enviar correos en nombre
+					del dominio se toman de esos registros externos.
+					Esto significa que los servidores autorizados para enviar correos en
+					nombre de outlook.com se definen en los registros SPF de spf-
+					a.outlook.com y spf-b.outlook.com. En lugar de enumerar todas las
+					direcciones IP y servidores en el registro SPF de outlook.com,
+					simplemente se hace referencia a estos registros externos para
+					simplificar y mantener actualizada la política SPF.
+			
+			
+					“all" especifica una "falla suave" en la política SPF. Esto significa que, si
+					el correo no proviene de ninguna de las fuentes autorizadas
+					mencionadas anteriormente en la política SPF, el correo no se
+					rechazará automáticamente, pero podría ser marcado como
+					sospechoso o marcado de alguna otra manera por el destinatario.
+					
+		
+			12. Observar el gráfico a continuación y teniendo en cuenta lo siguiente , responder:
+				
+				● El usuario juan@misitio.com.ar en PC-A desea enviar un mail al usuario
+				  alicia@example.com
+				● Cada organización tiene su propios servidores de DNS y Mail
+				● El servidor ns1 de misitio.com.ar no tiene la recursión habilitada
+				
+					a. El servidor de mail, mail1, y de HTTP, www, de example.com tienen la misma
+					   IP, ¿es posible esto? Si lo es, ¿cómo lo resolvería?
+					   
+					    Si, es posible esto. Para que esto funcione correctamente, se debe
+						asegurar que el servidor de correo y el servidor web estén configurados
+						para escuchar en puertos diferentes. El protocolo SMTP se utiliza para
+						el correo electrónico y generalmente se ejecuta en el puerto 25 o el
+						puerto 587, mientras que HTTP utiliza el puerto 80 o el puerto 443 para
+						conexiones seguras (HTTPS).
+				
+					b. Al enviar el mail, ¿por cuál registro de DNS consultará el MUA?
+						
+						El MUA en caso de tener configurado el nombre del servidor de correo
+						electrónico saliente deberá hacer una consulta sobre el registro A para
+						poder saber la dirección IP correspondiente a ese nombre de dominio,
+						en caso de tener configurada la IP no va a necesitar realizar ninguna
+						consulta.
+						
+					c. Una vez que el mail fue recibido por el servidor smtp-5, ¿por qué registro de
+					   DNS consultará?
+					
+						Este consultara el registro MX del dominio receptor (example.com)
+					
+					d. Si en el punto anterior smtp-5 recibiese un listado de nombres de servidores
+					   de correo, ¿será necesario realizar una consulta de DNS adicional? Si es
+					   afirmativo, ¿por qué tipo de registro y de cuál servidor preguntaría?
+					   
+					   Si, seria necesario para obtener la IP de los nombres de servidores
+					   dados. Deberá preguntar por el registro A (siguiendo la prioridad)
+					   
+					e. Indicar todo el proceso que deberá realizar el servidor ns1 de misitio.com.ar
+					   para obtener los servidores de mail de example.com.
+					   
+					   1. Consultará al root server más cercano (b.root-servers.net) y este
+						  proporcionará la dirección IP de un servidor DNS autoritativo para
+						  .com (c.gtld-servers.net)
+					   2. Consultará con el servidor autoritativo de .com y este proporcionará
+						  la dirección IP de un servidor DNS autoritativo para example.com
+					   3. ns1 consultará al servidor DNS autoritativo de example.com para
+						  obtener los registros MX específicos que indican los servidores de
+						  correo asociados con example.com.
+					   
+					f. Teniendo en cuenta el proceso de encapsulación/desencapsulación y
+					   definición de protocolos, responder V o F y justificar:
+				
+				● Los datos de la cabecera de SMTP deben ser analizados por el
+				  servidor DNS para responder a la consulta de los registros MX[F]
+				  
+				  Los datos de la cabecera de SMTP deben ser analizados por el MSA para determinar si
+				  hay algún campo faltante que debe ser completado.
+				  El servidor DNS no debe analizar los datos de la cabecera para responder a la consulta 
+				  de los registros MX. Simplemente responde la consulta sin analizarlos.
+				   				
+				● Al ser recibidos por el servidor smtp-5 los datos agregados por el
+				  protocolo SMTP serán analizados por cada una de las capas inferiores[F]
+				  
+				   En el modelo de capas de protocolo, cada capa es responsable de procesar y encapsular 
+				   los datos antes de pasarlos a la capa inferior, por lo que no son analizados por las 
+				   capas inferiores
+				  
+				● Cada protocolo de la capa de aplicación agrega una cabecera con
+				  información propia de ese protocolo[F]
+				  
+				   No todos los protocolos de la capa de aplicación agregan una cabecera con 
+				   información propia de ese protocolo.(sospechoso)
+				  
+				● Como son todos protocolos de la capa de aplicación, las cabeceras
+				  agregadas por el protocolo de DNS puede ser analizadas y comprendidas por el protocolo SMTP 					  o HTTP[F]
+				  
+				   Los protocolos son independientes del resto. Cada protocolo de aplicación tiene su 
+				   propia estructura de datos y cabeceras, y no están necesariamente diseñados para
+				   interoperar entre sí de manera directa.
+				  
+				● Para que los cliente en misitio.com.ar puedan acceder el servidor
+				  HTTP www.example.com y mostrar correctamente su contenido deben tener el mismo sistema 						  operativo.[F]
+				  
+				  	el protocolo HTTP provee la abstracción necesaria para que clientes que distintos sistemas 					operativos puedan acceder al mismo contenido sin problemas
+					
+					g. Un cliente web que desea acceder al servidor www.example.com y que no
+					pertenece a ninguno de estos dos dominios puede usar a ns1 de
+					misitio.com.ar como servidor de DNS para resolver la consulta.
+					
+						 No, ya que el ns1 no es un servidor autoritativo de www.example.com, no lo va
+						 a tener en ningun registro y como www.example.com no es un subdominio de
+						 misitio.com.ar no va a poder delegar a otra zona. A su vez, ns1 no hace consultas
+						 recursivas fuera de misitio.com.ar (algo que se aclara en el enunciado). 
+						 Si se tratara de un cliente web perteneciente al dominio, si podría usarlo
+						 como servidor de DNS para resolver la consulta.
+						
+					h. Cuando Alicia quiera ver sus mails desde PC-D, ¿qué registro de DNS
+					   deberá consultarse?
+					
+						Ninguno. Es un protocolo distinto. Para ver el mail desde PC-D utilizara
+						el protocolo POP3 o IMAP. DNS es un protocolo distinto para resolver
+						nombres de dominios a IPs. El software de correo electrónico en PC-D
+						se comunicaría directamente con el servidor de correo utilizando la
+						dirección IP o el nombre de dominio previamente resuelto durante el
+						proceso de configuración
+					
+					i. Indicar todos los protocolos de mail involucrados, puerto y si usan TCP o
+					   UDP, en el envío y recepción de dicho mail
+					
+						Protocolos SMTP (25) para envió y POP3 (110) o IMAP (143) para
+						recepción. Todos estos utilizan TCP.

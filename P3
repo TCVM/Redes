@@ -1,0 +1,407 @@
+1. Investigue y describa cómo funciona el DNS. ¿Cuál es su objetivo?
+
+	El servicio de DNS (Domain Name System) es un protocolo que funciona como un apoyo al resto de los 
+	servicios y sistemas de Internet. Su objetivo principal es el de traducir nombres de dominio a direcciones
+	de Internet (direcciones IP) y, de esta forma, lograr una abstraccion de las direcciones de red utilizadas
+	internamente por los protocolos. Esto permite ubicar a un dispositivo por su nombre sin importar cual
+	es la direccion IP que tiene asignada en ese momento. Otra ventaja es que las personas no necesitan
+	recordar las direcciones IP.
+	
+2. ¿Qué es un root server? ¿Qué es un generic top-level domain (gtld)?
+
+	DNS utilizado un gran numero de servidores, organizados de forma jerarquica y distribuidos alrededor de
+	todo el mundo. Ningun servidor DNS dispone de todas las correspondencias de todos los host de Internet.
+	En su lugar, las correspondencias estan repartidas por los servidores DNS. Existen tres clases de 
+	servidores:
+		
+	Los servidores DNS Raiz, los servidores DNS de dominio de nivel superior(TLD, top level domain) y los
+	servidores autoritativos, organizados en una jerarquia.
+		
+	Los servidores DNS Raiz(Root): existen 13 en internet, cada servidor es un "cluster" de servidores
+	replicados, tanto por propositos de seguridad como de fiabilidad.  
+		 
+	Generic TLD: contienen dominios con propositos particulares, de acuerdo a diferentes activi-
+				 dades. Para 1980, los gTLD eran: .com, .edu, .gov, .int, .mil, .net y .org, pero solo
+				 .com, .net y .org tenıan libre el registro, el resto estaban dedicados, unicamente, a
+				 organizaciones de los Estados Unidos u organizaciones Internacionales. 
+
+3. ¿Qué es una respuesta del tipo autoritativa?
+
+	Dado un servidor Autoritativo, el cual recibe una una consulta de un nombre sobre el que tiene autoridad,
+	cuando este responde desde su base de datos de nombres se conidera una respuesta autoritativa. En caso de
+	que responda desde cache, se considera una respuesta no-autoritativa.
+	
+4. ¿Qué diferencia una consulta DNS recursiva de una iterativa?
+
+	.A la hora de resolver una consulta de nombre se delega, por completo, la responsabilidad en el Servidor
+	 Local y este se debe encargar de resolver la consulta. Esto es lo que se llama una Consulta Recursiva.
+	
+	.En caso de que el Servidor Local, ya teniendo la consulta y cofirmo que no es por un nombre local ni esta
+	 en su cache, debera intentar resolverla externamente. Podra intentar resolverlo de forma Recursiva, 
+	 preguntando a otro servidor de nombres y delegando la resolucion en este. Como, en general, las consultas
+	 Recursiva estan solo habilitadas de forma local, debera resolverla con un Consulta Iterativa encargandose
+	 el mismo.
+	
+	.La Consulta Iterativa consiste en preguntar de forma iterativa a los ROOT Name Servers. Estos no 
+	 responderan con la resolucion del nombre, sino que se fijaran en la consulta, comenzando del ultimo
+	 label del nombre (el de mas arriba en la jerarquia), cuales son los servidores encargados de este dominio
+	 y responderan con una lista de los mismos. Es posible que tengan conocimiento de mas labels, lo que
+	 permitira enviar una respuesta mas cercana y acortar los saltos de la busqueda.
+	 
+5. ¿Qué es el resolver?
+
+	(El que se encagar de resolver las consultas de nombre, basicamente)
+	
+	El Resolver se lo podría considerar como un agente encargado de resolver los
+	nombres a solicitud del cliente. Se puede tener un Stub/Dumb Resolver que no
+	realiza ninguna forma de caching y deja que el encargado de esto sea el
+	Servidor Local o un resolver activo, llamado Smart Resolver, que funciona en
+	cada equipo como si fuese un Servidor Local, realizando caching u ofreciendo
+	funcionalidades extras. Este suele hacer consultas recursivas.
+	
+	In networking, a resolver is typically a component that translates domain names into IP addresses, 
+	enabling devices to locate each other over a network.	
+
+6. Describa para qué se utilizan los siguientes tipos de registros de DNS:
+
+	a. A 	 f. NS
+	b. MX	 g. CNAME
+	c. PTR 	 h. SOA
+	d. AAAA  i. TXT
+	e. SRV 	 –
+	
+	Un servidor de DNS almacena la informacion con la que trabaja en una base de datos (DB) local. La DB es 
+	una estructura propia del sistema que se genera en memoria una vez que arranca el servicio y se configura
+	desde los archivos que residen en el sistema de archivos local. Dentro de la base de datos, la informacion
+	se organiza en registros llamados Resource Record (RR). Cada uno de estos registros puede guardar 
+	diferente tipo de informacion.
+	
+	a.Los registros A son registros que mapean de un nombre de domino a una direccion IP. Son los mas comunes.
+	  Pueden existir varios registros (A) con el mismo nombre. Para aprovechar esto, el servidor de DNS 
+	  deberıa responder con una lista de direcciones IP, siempre alternando el resultado con algun criterio.
+	
+	b.Los registros MX son registros que indican, para un nombre de domino, cuales son los servidores de mail
+	  SMTP en-cargados de recibir los mensajes para ese dominio. El servidor de mail SMTP que envıa el mensaje
+	  debera consultar, via el servicio de DNS, cuales son los servidores SMTP receptores para el dominio dado.
+	
+	c.Los registros (PTR) son registros que mapean direcciones IP a nombres de dominio. Son el inverso de los
+	  registros(A), por esto, se los suele llama reversos. Trabajan en el dominio especial in-addr.arpa.
+	  Los registros (PTR) deben estar en un sub-arbol (dominio) separado que, como se menciono mas
+	  arriba, se llama in-addr.arpa. Esto se debe a que la busqueda se realiza usando la direccion IP y no el
+	  nombre. Aunque, la informacion existe en los registro directos (A), no se puede generar un mecanismo
+	  de busqueda organizado, ya que dada una direccion IP no hay forma de saber en donde, que zona, esta
+	  asignada. Para este proposito, esta el sub-arbol in-addr.arpa que organiza las direcciones por octeto de
+	  las direcciones IP, generando un arbol. De esta manera, se provee un mecanismo a modo de ındice de 
+	  busqueda.
+	
+	d.Los registros AAAA son como los A pero usan ipv6. 
+
+	e.Los registros SRV se utilizan para asociar servicios o recursos a nombres de dominio.
+	
+	f.Los registros (NS) indican los servidores de nombre autoritativos para una zona o sub-dominio. A
+	  partir de esto, se puede lograr una delegacion de sub-dominios. A diferencia que los registros (MX),
+	  estos no llevan asociado una prioridad, todos los servidores tienen la misma precedencia.
+	
+	g.Los registros CNAME son registros que mapean de un nombre de domino a otros nombres. Se los conoce
+	  como aliases, debido a que dado un nombre indican el nombre original
+	  
+	h.Los registros (SOA) se crean por cada zona o sub-zona que brinda el servicio de DNS. En este
+	  registro se especifican los parametros globales para todos los registros del dominio o zona. Solo se 
+	  admite un registro (SOA) por zona.  
+	
+	i.Los registros TXT Son registros que mapean de un nombre de domino a informacion extra asociada con el 
+	  equipo que tiene dicho nombre, por ejemplo pueden indicar finalidad, usuarios, etc. No son utilizados
+	  habitualmente.
+	  
+7. En Internet, un dominio suele tener más de un servidor DNS. ¿Por qué cree que esto es así?
+
+	Al tener varios servidores para un mismo dominio no es necesario configurar
+	a todos con los mismos datos. El software de DNS permite asignar roles de Servidor Primario y Ser-
+	vidor(es) Secundario(s).
+	
+	Para que se pueda acceder lo más rápido posible (geográficamente hablando):
+	mejora la velocidad de resolución al servir a usuarios más cercanos; para que
+	haya redundancia y disponibilidad: en caso de que un servidor falle se tiene
+	otro como “backup”; para que haya distribución de carga: en caso de que sea
+	un servidor muy consultado, se evita la sobrecarga en un solo servidor.
+
+8. Cuando un dominio cuenta con más de un servidor, uno de ellos es el primario (o maestro) y todos los
+   demás son los secundarios (o esclavos). ¿Cuál es la razón de que sea así?
+   
+   Porque solo se requiere configurar el primario y luego el secundario obtendra una copia de la base de datos
+   del servidor maestro/primario. Es importante que los servidores esten actualizados, por eso debe existir
+   algun mecanismo para mantenerlos sincronizados. El Servidor Primario deberıa avisar a todos los Servidores 
+   Secundarios cuando se realiza un cambio, ası estos re-copian la base de datos de nombres desde el servidor
+   maestro. La comunicacion entre servidores se realiza vıa el mismo protocolo de DNS, con la diferencia que
+   se hace sobre TCP en lugar de UDP.
+   
+9. Explique brevemente en qué consiste el mecanismo de transferencia de zona y cuál es su finalidad.
+
+	El mecanismo en cuestion fue mencionado en el punto anterior.
+	El Servidor Primario deberıa avisar a todos los Servidores Secundarios cuando se realiza un cambio, ası
+	estos re-copian la base de datos de nombres desde el servidor maestro. La comunicacion entre servidores
+	se realiza via el mismo protocolo de DNS, con la diferencia que se hace sobre TCP en lugar de UDP, esto
+	se debe a que, generalmente, los datos transmitidos ocupan mas de 512 bytes (maximo para DNS sobre UDP).
+	Esta operacion se llama Transferencia de Zona o, en ingles, Zone Transfer.
+	
+10. Imagine que usted es el administrador del dominio de DNS de la UNLP (unlp.edu.ar). A su vez, cada
+	facultad de la UNLP cuenta con un administrador que gestiona su propio dominio (por ejemplo, en el
+	caso de la Facultad de Informática se trata de info.unlp.edu.ar). Suponga que se crea una nueva facultad,
+	Facultad de Redes, cuyo dominio será redes.unlp.edu.ar, y el administrador le indica que quiere poder
+	manejar su propio dominio. ¿Qué debe hacer usted para que el administrador de la Facultad de Redes
+	pueda gestionar el dominio de forma independiente? (Pista: investigue en qué consiste la delegación de
+	dominios).
+
+	Debo delegarle la administración del dominio. Para ello transfiero la autoridad del subdominio 
+	"redes.unlp.edu.ar" al administrador de la Facultad de Redes. Hay que configurar registros NS que
+	apunten a los servidores DNS de la Facultad de Redes como servidores autoritarios para ese subdominio.
+	Para hacerlo, el administrador de la Facultad de Redes debe proporcionarle los nombres y direcciones 
+	IP de los servidores DNS que desea utilizar.
+	
+11. Responda y justifique los siguientes ejercicios.
+
+	a. En la VM, utilice el comando dig para obtener la dirección IP del host www.redes.unlp.edu.ar y
+	   responda:
+	   
+	b. ¿Cuáles son los servidores de DNS del dominio redes.unlp.edu.ar?
+
+	c. Repita la consulta anterior cuatro veces más. ¿Qué observa? ¿Puede explicar a qué se debe?
+
+	d. Observe la información que obtuvo al consultar por los servidores de DNS del dominio. En base a la
+	   salida, ¿es posible indicar cuál de ellos es el primario?
+
+	e. Consulte por el registro SOA del dominio y responda.
+		
+		i. ¿Puede ahora determinar cuál es el servidor de DNS primario?
+
+		ii. ¿Cuál es el número de serie, qué convención sigue y en qué casos es importante actualizarlo?
+		
+		iii. ¿Qué valor tiene el segundo campo del registro? Investigue para qué se usa y como se inter-
+			 preta el valor.
+
+		iv. ¿Qué valor tiene el TTL de caché negativa y qué significa?
+
+	f. Indique qué valor tiene el registro TXT para el nombre saludo.redes.unlp.edu.ar. Investigue para qué
+	   es usado este registro.
+
+	g. Utilizando dig, solicite la transferencia de zona de redes.unlp.edu.ar, analice la salida y responda.
+
+		i. ¿Qué significan los números que aparecen antes de la palabra IN? ¿Cuál es su finalidad?
+
+		ii. ¿Cuántos registros NS observa? Compare la respuesta con los servidores de DNS del dominio
+			redes.unlp.edu.ar que dio anteriormente. ¿Puede explicar a qué se debe la diferencia y qué
+			significa?
+
+	h. Consulte por el registro A de www.redes.unlp.edu.ar y luego por el registro A de www.practica.re-
+	   des.unlp.edu.ar. Observe los TTL de ambos. Repita la operación y compare el valor de los TTL de
+	   cada uno respecto de la respuesta anterior. ¿Puede explicar qué está ocurriendo? (Pista: observar
+	   los flags será de ayuda).
+
+	i. Consulte por el registro A de www.practica2.redes.unlp.edu.ar. ¿Obtuvo alguna respuesta? Investi-
+	   gue sobre los codigos de respuesta de DNS. ¿Para qué son utilizados los mensajes NXDOMAIN y
+	   NOERROR?
+	   
+
+	b.dig redes.unlp.edu.ar -t ns
+	
+		-t:	especifica el tipo de consulta dns
+		
+		los servidores son
+			ns-sv-a.redes.unlp.edu.ar.
+			ns-sv-b.redes.unlp.edu.ar.
+		
+	c.Cambia el codigo de la cookie, el id del header, el when y el query time
+	
+	
+	d. No se debe utilizar el comando dig redes.unlp.edu.ar -t soa
+	
+		El registro SOA incluye información importante sobre el dominio, como el servidor DNS primario, el 				correo del administrador y parámetros relacionados con la actualización de la información.
+	
+	e. 
+	
+		i.si, el servidor es ns-sv-b.redes.unlp.edu.ar.
+		
+		ii.el numero de serie es 2020031700, Se debe actualizar cada vez que se hace alguna modifi-
+		   cacion al dominio. Se sugiere un formado YYYYMMDDSS. Tamaño de 32 bits.
+		   
+		iii. El segundo campo 604800 indica el refresh time
+		
+			Refresh Time: cada cuanto tiempo los servidores secundarios deben refrescar desde el maestro 					primario. Tamaño de 32 bits. Segun la [RFC-1912], se recomienda entre 1200 a 43200 								segundos (horas).
+			
+		iv. tiene el valor 86400.
+			TTL: en un principio se utilizaba como el Tiempo de Vida de un registro en una cache. Ahora se 					 	 utiliza como el TTL de Cacheo Negativo: si se pregunta por un valor y el servidor 								 autoritativo respondio que no lo tiene, no se volvera a preguntar por el tiempo de este 						 valor. Tamaño de 32 bits. El TTL se puede indicar para cada uno de los RRs o definir uno 						 global, depende de la implementacion. Este valor no es parte del SOA. En el caso de BIND 9, 					 se define con la macro $TTL.
+	
+	f. Ninguno. Este registro es usado para mapear el nombre de dominio a informacion extra asociada con el
+	   equipo que tiene dicho nombre.
+	  
+	g.
+		i. esos numeros indican el tiempo de vida del registro.
+		
+		ii. Se observan 4 registros, una transferencia de zona es una operación mediante la cual un servidor 				DNS envía una copia completa de los registros DNS de un dominio a otro servidor DNS o cliente, por
+			lo que tienen sentido que hayan aparecido mas registros.
+			
+	
+
+	h. El ttl del subdominio www.redes.unlp.edu.ar es constante en 300, el del subdominio www.practica.redes
+	   .unlp.edu.ar se reduce por cada llamada. Esto se debe a que www.redes.unlp.edu.ar es autoritativo
+	   (flag aa), mientras que www.practica.redes.unlp.edu.ar no.
+	   
+	i. devuelve una respuesta.
+	   El estado NXDOMAIN se utiliza para informar que se pudo encontrar el nombre del dominio consultado.
+	   El estado NOERROR se utiliza para informar que la resolcion de los nombres fue exitosa.
+
+
+12. Investigue los comando nslookup y host. ¿Para qué sirven? Intente con ambos comandos obtener:
+	
+	Dirección IP de www.redes.unlp.edu.ar.
+	Servidores de correo del dominio redes.unlp.edu.ar.
+	Servidores de DNS del dominio redes.unlp.edu.ar
+	
+	nslookup es un programa para hacer consultar nombres de servidores pertenecientes a dominios de internet.
+	   	Tiene dos modos:
+		Interactive: permite al usuario consultar nombres de servers por informacion sobre varios hosts y 							 dominios o para imprimir una lista con los hosts en un dominio.
+       Non-interactive:  imprime solo el nombre y la informacion requerida para un host o dominio.
+
+13. ¿Qué función cumple en Linux/Unix el archivo /etc/hosts o en Windows el archivo \WINDOWS\sys-
+	tem32\drivers\etc\hosts?
+	
+	La función que cumplen es mapear nombres de host a direcciones IP locales
+	sin la necesidad de consultar un servidor DNS externo. Originalmente, se
+	utilizaba principalmente para realizar la resolución de nombres de host a
+	direcciones IP en una red antes de la existencia generalizada de servidores
+	DNS
+
+14. Abra el programa Wireshark para comenzar a capturar el tráfico de red en
+	la interfaz con IP 172.28.0.1. Una vez abierto realice una consulta DNS con
+	el comando dig para averiguar el registro MX de redes.unlp.edu.ar y
+	luego, otra para averiguar los registros NS correspondientes al dominio
+	redes.unlp.edu.ar. Analice la información proporcionada por dig y
+	compárelo con la captura.
+	
+	hecho, hay un header llamado CLASS que no figura en la consola pero si en la captura.
+	
+15. Dada la siguiente situación: “Una PC en una red determinada, con acceso a Internet, utiliza los servicios
+	de DNS de un servidor de la red”. Analice:
+	
+	a. ¿Qué tipo de consultas (iterativas o recursivas) realiza la PC a su servidor de DNS?
+		
+		Haria consultas recursivas.
+		
+	b. ¿Qué tipo de consultas (iterativas o recursivas) realiza el servidor de DNS para resolver requeri-
+	   mientos de usuario como el anterior? ¿A quién le realiza estas consultas?
+	   
+	   Realiza consultas recursivas de forma jerarquica, desde un servidor raiz hasta llegar al servidor
+	   del dominio solicitado.
+	   
+16. Relacione DNS con HTTP. ¿Se puede navegar si no hay servicio de DNS?
+	
+	Seria posible pero extremadamente dificil, ya que haria falta que se tuviera en registro la ip de cada 			pagina a la que se quisiera acceder. No habria capacidad de busqueda.
+	
+17. Observar el siguiente gráfico y contestar:
+
+	a. Si la PC-A, que usa como servidor de DNS a "DNS Server", desea obtener la IP de www.unlp.edu.ar,
+	   cuáles serían, y en qué orden, los pasos que se ejecutarán para obtener la respuesta.
+
+		Parte desde el roor server 205.10.100.10, luego avanza al dominio .ar, seguido por edu.ar,
+		unlp.edu.ar, y finalmente www.unlp.edu.ar
+		
+	version mas completa
+	
+	1. PC-A (192.168.10.5) consulta primero a su resolver privado sobre la IP
+	   del host www.unlp.edu.ar.
+	
+	2. Si no puede obtener una respuesta (no esta cacheada) el resolver
+	   primario delega al DNS Server (192.168.10.2).
+	
+	3. Si este no puede obtenerla de su cache entonces el DNS Server
+	   consultara de forma iterativa al A.Root-Server (205.10.100.10) más
+	   cercano.
+	
+	3. Este le responderá (también de forma iterativa) con el NS (y el IP) de .ar,
+	   a.dns.ar (200.108.145.50).
+	
+	4. DNS Server consultara (de forma iterativa) a a.dns.ar.
+	
+	5. Este le responderá con los NS de .edu.ar, ns1.riu.edu.ar (170.210.0.18)
+	
+	6. DNS Server consultara a ns1.riu.edu.ar
+	
+	7. Este le responderá con el NS del servidor autoritativo del dominio
+	   unlp.edu.ar, unlp.unlp.edu.ar (163.10.0.67)
+	
+	8. DNS Server consultará a unlp.unlp.edu.ar que le responderá con la IP de
+	   www.unlp.edu.ar (163.10.0.54)
+	
+	9. El DNS Server cacheara la respuesta y le responderá al resolver de la
+	   PC-A con la IP de www.unlp.edu.ar (el resolver también la cacheara)
+
+	b. ¿Dónde es recursiva la consulta? ¿Y dónde iterativa?
+	
+		es recursiva desde el router a su servidor dns local, en caso de que esta cacheada la informacion,
+		se hacen consultas iterativas a cada dominio.
+
+18. ¿A quién debería consultar para que la respuesta sobre www.google.com
+	sea autoritativa?
+	
+	google.com
+	
+19. ¿Qué sucede si al servidor elegido en el paso anterior se lo consulta por
+	www.info.unlp.edu.ar? ¿Y si la consulta es al servidor 8.8.8.8?
+	
+	para dig www.info.unlp.edu.ar @ns1.google.com
+	"status: refused"
+	recursion requested but no availabled
+	
+	para dig www.info.unlp.edu.ar @8.8.8.8.
+	
+	"status: NOERROR"
+	es un server local.
+	
+20. En base a la siguiente salida de dig, conteste las consignas. Justifique en todos los casos.
+
+	1 ;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 4, ADDITIONAL: 4
+	2
+	3 ;; QUESTION SECTION:
+	4 ;ejemplo.com. IN _MX_
+	5
+	6 ;; ANSWER SECTION:
+	7 ejemplo.com. 1634 IN _MX_ 10 srv01.ejemplo.com.
+	8 ejemplo.com. 1634 IN _MX_ 5 srv00.ejemplo.com.
+	9
+	10 ;; AUTHORITY SECTION:
+	11 ejemplo.com. 92354 IN _NS_ ss00.ejemplo.com.
+	12 ejemplo.com. 92354 IN _NS_ ss02.ejemplo.com.
+	13 ejemplo.com. 92354 IN _NS_ ss01.ejemplo.com.
+	14 ejemplo.com. 92354 IN _NS_ ss03.ejemplo.com.
+	15
+	16 ;; ADDITIONAL SECTION:
+	17 srv01.ejemplo.com. 272 IN _A_ 64.233.186.26
+	18 srv01.ejemplo.com. 240 IN _AAAA_ 2800:3f0:4003:c00::1a
+	19 srv00.ejemplo.com. 272 IN _A_ 74.125.133.26
+	20 srv00.ejemplo.com. 240 IN _AAAA_ 2a00:1450:400c:c07::1b
+
+	Complete las líneas donde aparece __ con el registro correcto.
+		
+		MX porque la numeracion de los servidores indica prioridades 
+		NS porque son los responsables del dominio
+		A porque es ipv4
+		AAAA porque es ipv6
+		
+	¿Es una respuesta autoritativa? En caso de no serlo, ¿a qué servidor le preguntaría para obtener
+	una respuesta autoritativa?
+	
+	No, ya que el flag no es aa. Hay que hacer una consulta a ss00.ejemplo.com por ejemplo(esta en la seccion
+	autoritativa)
+	
+	¿La consulta fue recursiva? ¿Y la respuesta?
+	
+		La consulta fue recursiva, y eso se puede saber mediante el flag rd. La
+		respuesta también fue recursiva y se puede saber mediante el flag ra
+	
+	¿Qué representan los valores 10 y 5 en las líneas 7 y 8.
+	
+		Representan la prioridad. Indican el orden en el que se deben entregar los
+		correos electrónicos a los servidores de correo asociados al dominio
+		ejemplo.com. Esto quiere decir que los correos electrónicos se entregarán
+		primero al servidor con la prioridad más baja y si no está disponible, se
+		intentará entregar al servidor con la siguiente prioridad más baja.
